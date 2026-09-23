@@ -58,6 +58,23 @@ Inventory mouse controls:
 8. Craft a **Rotfang Pickaxe** from Rot Scales and Aurelium Bars, then mine **Cindrite** in the underworld. Smelt it at a Cinder Forge, found in the underworld ruins or crafted.
 9. **The Cinder Wall**: craft a Cinder Effigy at the forge and use it in the underworld. Defeat it to conquer the world.
 
+## Difficulty
+
+Choose a difficulty when you create a world. It is saved with the world and can't be changed afterwards. Hard worlds show a red **HARD** tag in the world list.
+
+- **Normal** is the classic experience. With gear from the matching tier, each boss fight takes about 1-2 minutes, and you'll probably die once or twice while you learn it. A fresh character can survive the first night by fighting.
+- **Hard** is diabolical. Changes compared with Normal:
+  - Enemies have 1.8× health and deal 1.7× damage.
+  - Bosses have 1.8× health and deal 1.4× damage.
+  - Bosses reach their second phase at 70% health instead of 50%.
+  - Everything moves 10% faster and attacks about 40% more often.
+  - Twice as many enemies spawn.
+  - Natural life regeneration is halved, and potion sickness lasts 1.5× longer.
+  - Knockback is stronger.
+  - In return, coin drops are 2.5× larger and every boss drops an extra roll of loot.
+
+Every balance number is in `src/config.js`: enemy and boss stats in `CFG.enemies`, boss behavior (speeds, attack timers) in `CFG.bosses`, and the difficulty multipliers in `CFG.difficulty`.
+
 ## Features
 
 - **World.** A seeded 1600×600 world. The loading screen shows each generation pass. It has:

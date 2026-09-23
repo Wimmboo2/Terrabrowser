@@ -13,31 +13,36 @@ export const HUMAN = {
 
 // ai: behavior key; spr: key into S.en; flags for spawning/despawn behavior
 export const EN = {
-  gelhopper: { name: 'Gelhopper', hp: 14, dmg: 7, def: 0, w: 24, h: 18, ai: 'hop', spr: 'gel_green', coin: 20, drops: [['gel', 1, 3, 1]], blood: '#4ec24a' },
-  dunegel: { name: 'Dune Gelhopper', hp: 26, dmg: 12, def: 3, w: 24, h: 18, ai: 'hop', spr: 'gel_sand', coin: 40, drops: [['gel', 2, 4, 1]], blood: '#d8b060' },
-  cavegel: { name: 'Cave Gelhopper', hp: 36, dmg: 15, def: 5, w: 24, h: 18, ai: 'hop', spr: 'gel_blue', coin: 60, drops: [['gel', 2, 5, 1]], blood: '#4a8ce8' },
-  shambler: { name: 'Shambler', hp: 45, dmg: 14, def: 6, w: 20, h: 42, ai: 'walker', human: 'shambler', style: 'zombie', speed: 0.9, coin: 60, kbRes: 0.4, night: true },
-  peeper: { name: 'Peeper', hp: 60, dmg: 18, def: 2, w: 26, h: 18, ai: 'flyer', spr: 'peeper', coin: 75, drops: [['lens', 1, 1, 0.4]], kbRes: 0.2, noGrav: true, night: true, blood: '#c03030' },
-  flitter: { name: 'Cave Flitter', hp: 18, dmg: 13, def: 2, w: 22, h: 14, ai: 'bat', spr: 'flitter', coin: 40, noGrav: true },
-  magmabat: { name: 'Magma Flitter', hp: 45, dmg: 30, def: 10, w: 22, h: 14, ai: 'bat', spr: 'flitter_hell', coin: 200, noGrav: true, inflict: ['fire', 180] },
-  grub: { name: 'Tunnel Grub', hp: 40, dmg: 14, def: 4, w: 14, h: 14, ai: 'worm', worm: { len: 6, seg: 12, spr: 'grub', speed: 4.2, accel: 0.12 }, coin: 80, noGrav: true, noCollide: true, kbRes: 1 },
-  ossling: { name: 'Ossling', hp: 70, dmg: 20, def: 8, w: 20, h: 42, ai: 'walker', human: 'ossling', style: 'skeleton', speed: 1.1, throws: 'bone', coin: 120, drops: [['bone', 1, 3, 0.5]], kbRes: 0.3, blood: '#e4dfc8' },
-  scuttler: { name: 'Dune Scuttler', hp: 50, dmg: 12, def: 6, w: 26, h: 14, ai: 'turret', spr: 'scuttler', shot: 'sandball', coin: 120, blood: '#c8a060' },
-  frostimp: { name: 'Frost Imp', hp: 55, dmg: 18, def: 6, w: 18, h: 24, ai: 'caster', spr: 'frostimp', shot: 'icicle', coin: 130, blood: '#78b8e8' },
-  snapvine: { name: 'Snapvine', hp: 80, dmg: 26, def: 8, w: 22, h: 22, ai: 'tether', spr: 'snapvine', inflict: ['poison', 300], coin: 150, kbRes: 1, noGrav: true, noCollide: true, blood: '#4aa02a' },
-  rotflier: { name: 'Rot Flier', hp: 45, dmg: 22, def: 8, w: 22, h: 18, ai: 'homing', spr: 'rotflier', coin: 120, drops: [['rotten_chunk', 1, 2, 0.5]], noGrav: true, speed: 3.2, accel: 0.1, blood: '#6a4a7a' },
-  caster: { name: 'Crypt Caster', hp: 90, dmg: 30, def: 10, w: 20, h: 34, ai: 'caster', spr: 'caster', shot: 'shadowbolt', coin: 300, drops: [['bone', 1, 2, 0.5], ['tidecaller_staff', 1, 1, 0.02]], blood: '#2a3a7a' },
-  emberimp: { name: 'Ember Imp', hp: 90, dmg: 32, def: 14, w: 18, h: 24, ai: 'caster', spr: 'emberimp', shot: 'fireball', coin: 400, inflict: ['fire', 180], blood: '#d84a2a' },
-  servant: { name: 'Servant of the Omnivisor', hp: 10, dmg: 12, def: 0, w: 18, h: 14, ai: 'homing', spr: 'servant', noGrav: true, noCollide: true, speed: 4, accel: 0.15, minion: true, coin: 0, blood: '#c03030' },
-  leech: { name: 'Cinder Leech', hp: 60, dmg: 26, def: 6, w: 12, h: 12, ai: 'worm', worm: { len: 5, seg: 9, spr: 'leech', speed: 6, accel: 0.25, air: true }, noGrav: true, noCollide: true, minion: true, coin: 0, kbRes: 1, blood: '#c83848' },
+  gelhopper: { name: 'Gelhopper', w: 24, h: 18, ai: 'hop', spr: 'gel_green', drops: [['gel', 1, 3, 1]], blood: '#4ec24a' },
+  dunegel: { name: 'Dune Gelhopper', w: 24, h: 18, ai: 'hop', spr: 'gel_sand', drops: [['gel', 2, 4, 1]], blood: '#d8b060' },
+  cavegel: { name: 'Cave Gelhopper', w: 24, h: 18, ai: 'hop', spr: 'gel_blue', drops: [['gel', 2, 5, 1]], blood: '#4a8ce8' },
+  shambler: { name: 'Shambler', w: 20, h: 42, ai: 'walker', human: 'shambler', style: 'zombie', speed: 0.9, kbRes: 0.4, night: true },
+  peeper: { name: 'Peeper', w: 26, h: 18, ai: 'flyer', spr: 'peeper', drops: [['lens', 1, 1, 0.4]], kbRes: 0.2, noGrav: true, night: true, blood: '#c03030' },
+  flitter: { name: 'Cave Flitter', w: 22, h: 14, ai: 'bat', spr: 'flitter', noGrav: true },
+  magmabat: { name: 'Magma Flitter', w: 22, h: 14, ai: 'bat', spr: 'flitter_hell', noGrav: true, inflict: ['fire', 180] },
+  grub: { name: 'Tunnel Grub', w: 14, h: 14, ai: 'worm', worm: { len: 6, seg: 12, spr: 'grub', speed: 4.2, accel: 0.12 }, noGrav: true, noCollide: true, kbRes: 1 },
+  ossling: { name: 'Ossling', w: 20, h: 42, ai: 'walker', human: 'ossling', style: 'skeleton', speed: 1.1, throws: 'bone', drops: [['bone', 1, 3, 0.5]], kbRes: 0.3, blood: '#e4dfc8' },
+  scuttler: { name: 'Dune Scuttler', w: 26, h: 14, ai: 'turret', spr: 'scuttler', shot: 'sandball', blood: '#c8a060' },
+  frostimp: { name: 'Frost Imp', w: 18, h: 24, ai: 'caster', spr: 'frostimp', shot: 'icicle', blood: '#78b8e8' },
+  snapvine: { name: 'Snapvine', w: 22, h: 22, ai: 'tether', spr: 'snapvine', inflict: ['poison', 300], kbRes: 1, noGrav: true, noCollide: true, blood: '#4aa02a' },
+  rotflier: { name: 'Rot Flier', w: 22, h: 18, ai: 'homing', spr: 'rotflier', drops: [['rotten_chunk', 1, 2, 0.5]], noGrav: true, speed: 3.2, accel: 0.1, blood: '#6a4a7a' },
+  caster: { name: 'Crypt Caster', w: 20, h: 34, ai: 'caster', spr: 'caster', shot: 'shadowbolt', drops: [['bone', 1, 2, 0.5], ['tidecaller_staff', 1, 1, 0.02]], blood: '#2a3a7a' },
+  emberimp: { name: 'Ember Imp', w: 18, h: 24, ai: 'caster', spr: 'emberimp', shot: 'fireball', inflict: ['fire', 180], blood: '#d84a2a' },
+  servant: { name: 'Servant of the Omnivisor', w: 18, h: 14, ai: 'homing', spr: 'servant', noGrav: true, noCollide: true, speed: 4, accel: 0.15, minion: true, blood: '#c03030' },
+  leech: { name: 'Cinder Leech', w: 12, h: 12, ai: 'worm', worm: { len: 5, seg: 9, spr: 'leech', speed: 6, accel: 0.25, air: true }, noGrav: true, noCollide: true, minion: true, kbRes: 1, blood: '#c83848' },
   // bosses
-  omni: { name: 'Omnivisor', boss: true, hp: 2800, dmg: 15, def: 12, w: 80, h: 80, ai: 'omni', noGrav: true, noCollide: true, kbRes: 1, coin: 50000, blood: '#c03030' },
-  rotmaw: { name: 'Rotmaw Devourer', boss: true, hp: 3600, dmg: 30, def: 4, w: 30, h: 30, ai: 'worm', worm: { len: 26, seg: 22, spr: 'rotmaw', speed: 8.5, accel: 0.22, bodyDmg: 16 }, noGrav: true, noCollide: true, kbRes: 1, coin: 80000, blood: '#6a3a8a' },
-  warden: { name: 'Ossuary Warden', boss: true, hp: 4400, dmg: 32, def: 10, w: 64, h: 64, ai: 'warden', noGrav: true, noCollide: true, kbRes: 1, coin: 100000, blood: '#e4dfc8' },
-  hand: { name: 'Warden Hand', hp: 800, dmg: 24, def: 14, w: 36, h: 36, ai: 'hand', noGrav: true, noCollide: true, kbRes: 1, coin: 0, minion: true, blood: '#e4dfc8' },
-  wall: { name: 'The Cinder Wall', boss: true, hp: 8000, dmg: 50, def: 12, w: 120, h: 680, ai: 'wall', noGrav: true, noCollide: true, kbRes: 1, coin: 200000, blood: '#ff6020' },
+  omni: { name: 'Omnivisor', boss: true, w: 80, h: 80, ai: 'omni', noGrav: true, noCollide: true, kbRes: 1, blood: '#c03030' },
+  rotmaw: { name: 'Rotmaw Devourer', boss: true, w: 30, h: 30, ai: 'worm', worm: { len: 26, seg: 22, spr: 'rotmaw', speed: CFG.bosses.rotmaw.speed, accel: CFG.bosses.rotmaw.accel, bodyDmg: CFG.bosses.rotmaw.bodyDmg }, noGrav: true, noCollide: true, kbRes: 1, blood: '#6a3a8a' },
+  warden: { name: 'Ossuary Warden', boss: true, w: 64, h: 64, ai: 'warden', noGrav: true, noCollide: true, kbRes: 1, blood: '#e4dfc8' },
+  hand: { name: 'Warden Hand', w: 36, h: 36, ai: 'hand', noGrav: true, noCollide: true, kbRes: 1, minion: true, blood: '#e4dfc8' },
+  wall: { name: 'The Cinder Wall', boss: true, w: 120, h: 680, ai: 'wall', noGrav: true, noCollide: true, kbRes: 1, blood: '#ff6020' },
 };
-for (const k in EN) EN[k].key = k;
+for (const k in EN) { Object.assign(EN[k], CFG.enemies[k]); EN[k].key = k; }
+const BK = CFG.bosses;
+// difficulty helpers
+const D = G => G.diff || CFG.difficulty.normal;
+const cd = (G, n) => Math.max(1, Math.round(n * D(G).cooldown));
+const sp = (G, v) => v * D(G).speed;
 
 export const PROJ = {
   arrow: { w: 6, h: 6, grav: 0.12, life: 400, draw: 'arrow', col: '#c8a070' },
@@ -66,8 +71,9 @@ const cxOf = e => e.x + e.w / 2, cyOf = e => e.y + e.h / 2;
 // ------------------------------------------------------------------ creation
 export function spawnEnemy(G, key, x, y, o = {}) {
   const d = EN[key];
+  const hp = Math.round(d.hp * (d.boss ? D(G).bossHp : D(G).enemyHp));
   const e = Object.assign({
-    uid: UID++, key, d, x: x - d.w / 2, y: y - d.h, w: d.w, h: d.h, vx: 0, vy: 0, hp: d.hp, maxHp: d.hp,
+    uid: UID++, key, d, x: x - d.w / 2, y: y - d.h, w: d.w, h: d.h, vx: 0, vy: 0, hp, maxHp: hp,
     dir: 1, t: 0, a: 0, b: 0, c: 0, st: 0, onGround: false, flash: 0, rot: 0, anim: 0, burn: 0,
     noGrav: !!d.noGrav, noCollide: !!d.noCollide, stepUp: d.ai === 'walker', dead: false,
   }, o);
@@ -102,7 +108,7 @@ export function hurtPlayer(G, dmg, dir, cause) {
   G.fx.text(p.x + 10, p.y, real, '#ff4646');
   G.fx.particles(p.x + 10, p.y + 20, 6, '#c02020', { spread: 2.5 });
   G.sfx('hurt'); G.fx.shake(3);
-  if (dir && !p.stats.kbImmune) { p.vx = dir * 4.5; p.vy = -3.5; p.jumpT = 0; }
+  if (dir && !p.stats.kbImmune) { const k = D(G).kb; p.vx = dir * 4.5 * k; p.vy = -3.5 * k; p.jumpT = 0; }
   if (p.hp <= 0) killPlayer(G, cause || 'was slain');
   return true;
 }
@@ -140,9 +146,10 @@ export function killEnemy(G, e, silent) {
   if (silent) return;
   const d = e.d, cx = cxOf(e), cy = cyOf(e);
   for (const [id, a, b, ch] of d.drops || []) if (Math.random() < ch) dropItem(G, id, a + Math.floor(Math.random() * (b - a + 1)), cx, cy);
-  if (d.coin) for (const c of coinsToItems(d.coin * rnd(0.8, 1.2))) dropItem(G, c.id, c.n, cx, cy);
+  if (d.coin) for (const c of coinsToItems(d.coin * D(G).coins * rnd(0.8, 1.2))) dropItem(G, c.id, c.n, cx, cy);
   const p = G.player;
-  if (!d.minion && !d.boss && p.hp < p.lifeMax && Math.random() < 0.09) dropItem(G, 'heart_pickup', 1, cx, cy);
+  const heartChance = d.key === 'servant' ? 0.3 : d.minion || d.boss ? 0 : 0.09;
+  if (p.hp < p.lifeMax && Math.random() < heartChance) dropItem(G, 'heart_pickup', 1, cx, cy);
   const pts = e.segs ? [{ x: cx, y: cy }, ...e.segs] : [{ x: cx, y: cy }];
   for (const s of pts) G.fx.particles(s.x, s.y, d.boss ? 14 : 10, d.blood || '#c03030', { spread: 3, life: 45 });
   G.sfx(d.boss ? 'roar' : 'kill');
@@ -155,7 +162,7 @@ function bossDefeated(G, e) {
   if (G.boss === e) G.boss = null;
   F.bosses[d.key] = true;
   G.msg(d.name + ' has been defeated!', CFG.bossColor);
-  for (const [id, a, b, ch] of BOSS_LOOT[d.key] || []) if (Math.random() < ch) dropItem(G, id, a + Math.floor(Math.random() * (b - a + 1)), cxOf(e), Math.min(cyOf(e), G.player.y));
+  for (let roll = 0; roll <= D(G).extraLoot; roll++) for (const [id, a, b, ch] of BOSS_LOOT[d.key] || []) if (Math.random() < ch) dropItem(G, id, a + Math.floor(Math.random() * (b - a + 1)), cxOf(e), Math.min(cyOf(e), G.player.y));
   if (d.key === 'warden') {
     F.cryptOpen = true;
     const wd = G.world, [dx, dy] = wd.cryptDoor || [0, 0];
@@ -241,13 +248,13 @@ const AI = {
     if (!p.dead && Math.abs(dx) > 6) e.dir = sign(dx);
     if (p.dead || (d.night && G.time.isDay)) e.dir = e.dir || 1;
     e.vx += e.dir * 0.07;
-    if (Math.abs(e.vx) > d.speed) e.vx *= 0.9;
+    if (Math.abs(e.vx) > sp(G, d.speed)) e.vx *= 0.9;
     if (e.onGround && e.hitX) e.vy = -6.4;
     e.anim += Math.abs(e.vx) * 0.12;
     if (d.throws && !p.dead) {
       e.b++;
       const dist = Math.hypot(dx, p.y - e.y);
-      if (e.b > 140 && dist < 420) {
+      if (e.b > cd(G, 140) && dist < 420) {
         e.b = rnd(-30, 0);
         const t = Math.max(20, dist / 6);
         makeProj(G, d.throws, cxOf(e), e.y + 12, (p.x + 10 - cxOf(e)) / t, (p.y + 12 - e.y - 12) / t - 0.5 * 0.2 * t, { dmg: d.dmg * 0.8, src: d.name });
@@ -262,25 +269,30 @@ const AI = {
       e.vx += sign(dx) * 0.07; e.vy += sign(dy) * 0.05;
       e.dir = sign(dx);
     }
-    e.vx = Math.max(-2.6, Math.min(2.6, e.vx)); e.vy = Math.max(-1.8, Math.min(1.8, e.vy));
+    const fx = sp(G, 2.6), fy = sp(G, 1.8);
+    e.vx = Math.max(-fx, Math.min(fx, e.vx)); e.vy = Math.max(-fy, Math.min(fy, e.vy));
     e.rot = Math.atan2(e.vy, e.vx);
   },
   bat(G, e) {
     const p = G.player;
     e.t++;
     if (e.t % 40 === 1) { e.tx = rnd(-90, 90); e.ty = rnd(-70, 40); }
-    toward(e, p.x + 10 + (e.tx || 0), p.y + 10 + (e.ty || 0), 0.18, 3.2);
+    toward(e, p.x + 10 + (e.tx || 0), p.y + 10 + (e.ty || 0), 0.18, sp(G, 3.2));
     e.frame = (e.t >> 3) & 1; e.dir = sign(e.vx);
   },
   worm(G, e) {
     const p = G.player, Wm = e.d.worm, wd = G.world;
     const hx = cxOf(e), hy = cyOf(e);
     const inT = Wm.air || solidAt(wd, Math.floor(hx / 16), Math.floor(hy / 16)) || wd.wall[Math.floor(hy / 16) * wd.w + Math.floor(hx / 16)] > 0;
-    const phase2 = e.d.boss && e.hp < e.maxHp / 2;
-    const spd = Wm.speed * (phase2 ? 1.25 : 1);
+    const phase2 = e.d.boss && e.hp < e.maxHp * D(G).phase2;
+    const spd = sp(G, Wm.speed * (phase2 ? BK.rotmaw.p2Speed : 1));
     if (p.dead) { e.vy += 0.3; }
     else if (inT) toward(e, p.x + 10, p.y + 21, Wm.accel, spd);
-    else { e.vy = Math.min(e.vy + 0.25, 10); e.vx *= 0.995; }
+    else {
+      e.vy = Math.min(e.vy + 0.25, 10); e.vx *= 0.995;
+      // bosses keep curving toward the player while airborne
+      if (e.d.boss) { const ax = Math.sign(p.x + 10 - hx) * Wm.accel * BK.rotmaw.airSteer; e.vx += ax; if (p.y + 21 < hy) e.vy -= Wm.accel * BK.rotmaw.airSteer * 0.6; }
+    }
     if (inT && !Wm.air && Math.random() < 0.15) G.fx.particles(hx, hy, 1, '#6b4a33', { spread: 1.5 });
     e.x += e.vx; e.y += e.vy;
     e.rot = Math.atan2(e.vy, e.vx);
@@ -293,11 +305,11 @@ const AI = {
       s.rot = Math.atan2(dy, dx);
       prev = s;
     }
-    if (phase2 && ++e.b > 45) {
+    if (phase2 && ++e.b > cd(G, BK.rotmaw.spitEvery)) {
       e.b = 0;
       const s = e.segs[Math.floor(Math.random() * e.segs.length)];
       const dx = p.x + 10 - s.x, dy = p.y + 20 - s.y, dd = Math.hypot(dx, dy) || 1;
-      makeProj(G, 'rotglob', s.x, s.y, dx / dd * 5, dy / dd * 5, { dmg: 22, src: e.d.name });
+      makeProj(G, 'rotglob', s.x, s.y, dx / dd * 5, dy / dd * 5, { dmg: BK.rotmaw.spitDmg, src: e.d.name, boss: true });
     }
   },
   turret(G, e) {
@@ -306,7 +318,7 @@ const AI = {
     e.dir = sign(dx);
     if (e.onGround) e.vx = dist < 500 ? e.dir * 0.4 : 0;
     e.anim += Math.abs(e.vx) * 0.2;
-    if (!p.dead && dist < 480 && ++e.a > 120) {
+    if (!p.dead && dist < 480 && ++e.a > cd(G, 120)) {
       e.a = 0;
       const t = 50;
       makeProj(G, e.d.shot, cxOf(e), e.y + 2, dx / t, dy / t - 0.5 * 0.15 * t, { dmg: e.d.dmg, src: e.d.name });
@@ -316,7 +328,8 @@ const AI = {
     const p = G.player;
     e.t++;
     e.dir = sign(p.x - e.x);
-    if (e.t % 260 === 1 && !p.dead) {
+    const cyc = cd(G, 260), k = e.t % cyc;
+    if (k === 1 && !p.dead) {
       const spot = findFloorNear(G, Math.floor((p.x + 10) / 16), Math.floor((p.y + 20) / 16), 16);
       if (spot) {
         G.fx.particles(cxOf(e), cyOf(e), 12, e.d.blood, { spread: 2, grav: -0.05 });
@@ -324,8 +337,7 @@ const AI = {
         G.fx.particles(cxOf(e), cyOf(e), 12, e.d.blood, { spread: 2, grav: -0.05 });
       }
     }
-    const k = e.t % 260;
-    if (!p.dead && (k === 70 || k === 120 || k === 170)) {
+    if (!p.dead && (k === Math.round(cyc * 0.27) || k === Math.round(cyc * 0.46) || k === Math.round(cyc * 0.65))) {
       const dx = p.x + 10 - cxOf(e), dy = p.y + 20 - cyOf(e), d = Math.hypot(dx, dy) || 1;
       if (d < 700) { makeProj(G, e.d.shot, cxOf(e), cyOf(e) - 4, dx / d * 5, dy / d * 5, { dmg: e.d.dmg * 0.8, src: e.d.name }); G.sfx('magic'); }
     }
@@ -336,7 +348,7 @@ const AI = {
     const p = G.player;
     const pdx = p.x + 10 - e.ax, pdy = p.y + 20 - e.ay;
     const near = !p.dead && Math.hypot(pdx, pdy) < 190;
-    toward(e, near ? p.x + 10 : e.ax, near ? p.y + 20 : e.ay - 40, near ? 0.3 : 0.1, near ? 3.5 : 1.5);
+    toward(e, near ? p.x + 10 : e.ax, near ? p.y + 20 : e.ay - 40, near ? 0.3 : 0.1, near ? sp(G, 3.5) : 1.5);
     const dx = cxOf(e) - e.ax, dy = cyOf(e) - e.ay, d = Math.hypot(dx, dy);
     if (d > 120) { e.x -= dx / d * (d - 120); e.y -= dy / d * (d - 120); e.vx *= 0.5; e.vy *= 0.5; }
     e.x += e.vx; e.y += e.vy;
@@ -347,7 +359,7 @@ const AI = {
     const p = G.player, d = e.d;
     e.t++;
     if (p.dead) e.vy -= 0.1;
-    else toward(e, p.x + 10, p.y + 18, d.accel || 0.1, d.speed || 3);
+    else toward(e, p.x + 10, p.y + 18, d.accel || 0.1, sp(G, d.speed || 3));
     e.vy += Math.sin(e.t * 0.08) * 0.04;
     e.rot = Math.atan2(e.vy, e.vx); e.dir = sign(e.vx);
     e.frame = (e.t >> 3) & 1;
@@ -360,19 +372,20 @@ const AI = {
       if (Math.abs(cyOf(e) - py) > 1400) { G.msg('The Omnivisor has fled!', CFG.bossColor); killEnemy(G, e, true); G.boss = null; }
       return;
     }
-    if (!e.p2 && e.hp < e.maxHp * 0.5 && e.st !== 2) { e.st = 2; e.a = 0; G.sfx('roar'); }
+    const K = BK.omni;
+    if (!e.p2 && e.hp < e.maxHp * D(G).phase2 && e.st !== 2) { e.st = 2; e.a = 0; G.sfx('roar'); }
     const aim = Math.atan2(py - cyOf(e), px - cxOf(e));
     if (e.st === 0) {
       const tx = px, ty = py - 220;
-      const dx = tx - cxOf(e), dy = ty - cyOf(e), d = Math.hypot(dx, dy) || 1, sp = Math.min(d * 0.05, e.p2 ? 8 : 6);
-      e.vx += (dx / d * sp - e.vx) * 0.08; e.vy += (dy / d * sp - e.vy) * 0.08;
+      const dx = tx - cxOf(e), dy = ty - cyOf(e), d = Math.hypot(dx, dy) || 1, spd = Math.min(d * 0.05, sp(G, e.p2 ? 8 : 6));
+      e.vx += (dx / d * spd - e.vx) * 0.08; e.vy += (dy / d * spd - e.vy) * 0.08;
       e.rot += (aim - e.rot) * 0.2;
       e.a++;
-      if (!e.p2 && e.a % 70 === 0 && G.enemies.filter(q => q.key === 'servant' && !q.dead).length < 3) spawnEnemy(G, 'servant', cxOf(e), cyOf(e) + 10);
-      if (e.a > (e.p2 ? 110 : 220)) { e.st = 1; e.b = e.p2 ? 5 : 3; e.c = 0; }
+      if (!e.p2 && e.a % cd(G, K.servantEvery) === 0 && G.enemies.filter(q => q.key === 'servant' && !q.dead).length < K.maxServants) spawnEnemy(G, 'servant', cxOf(e), cyOf(e) + 10);
+      if (e.a > cd(G, e.p2 ? K.hoverP2 : K.hover)) { e.st = 1; e.b = e.p2 ? K.chargesP2 : K.charges; e.c = 0; }
     } else if (e.st === 1) {
-      const dur = e.p2 ? 32 : 46, rest = 18;
-      if (e.c === 0) { const s = e.p2 ? 12.5 : 8.5; e.vx = Math.cos(aim) * s; e.vy = Math.sin(aim) * s; e.rot = aim; G.sfx('dash'); }
+      const dur = e.p2 ? K.chargeDurP2 : K.chargeDur, rest = cd(G, 18);
+      if (e.c === 0) { const s = sp(G, e.p2 ? K.chargeSpdP2 : K.chargeSpd); e.vx = Math.cos(aim) * s; e.vy = Math.sin(aim) * s; e.rot = aim; G.sfx('dash'); }
       e.c++;
       if (e.c > dur) { e.vx *= 0.9; e.vy *= 0.9; e.rot += (aim - e.rot) * 0.2; }
       if (e.c > dur + rest) { e.c = 0; if (--e.b <= 0) { e.st = 0; e.a = 0; } }
@@ -380,7 +393,7 @@ const AI = {
       e.a++; e.vx *= 0.9; e.vy *= 0.9;
       e.rot += 0.45 * (1 - e.a / 100);
       if (e.a % 6 === 0) G.fx.particles(cxOf(e), cyOf(e), 4, '#c03030', { spread: 3 });
-      if (e.a === 50) { e.p2 = true; e.dmgMul = 1.55; e.defMul = 0; G.fx.particles(cxOf(e), cyOf(e), 30, '#e8d0d0', { spread: 5 }); }
+      if (e.a === 50) { e.p2 = true; e.dmgMul = K.p2DmgMul; e.defMul = 0; G.fx.particles(cxOf(e), cyOf(e), 30, '#e8d0d0', { spread: 5 }); }
       if (e.a > 100) { e.st = 0; e.a = 0; }
     }
     e.x += e.vx; e.y += e.vy;
@@ -389,27 +402,28 @@ const AI = {
     const p = G.player, px = p.x + 10, py = p.y + 21;
     e.t++;
     const handsAlive = e.hands && e.hands.some(h => !h.dead);
-    const p2 = !handsAlive || e.hp < e.maxHp / 2;
+    const K = BK.warden;
+    const p2 = !handsAlive || e.hp < e.maxHp * D(G).phase2;
     const rage = G.time.isDay ? 2.5 : 1;
     e.dmgMul = G.time.isDay ? 3 : 1;
     if (p.dead) { e.vy -= 0.3; e.x += e.vx; e.y += e.vy; if (Math.abs(cyOf(e) - py) > 1500) { G.msg('The Ossuary Warden has returned to its slumber.', CFG.bossColor); if (e.hands) e.hands.forEach(h => killEnemy(G, h, true)); killEnemy(G, e, true); G.boss = null; } return; }
     if (e.st === 0) {
       e.defMul = 1;
       const tx = px, ty = py - 200, dx = tx - cxOf(e), dy = ty - cyOf(e), d = Math.hypot(dx, dy) || 1;
-      const sp = Math.min(d * 0.04, (p2 ? 4.5 : 3.5) * rage);
-      e.vx += (dx / d * sp - e.vx) * 0.06; e.vy += (dy / d * sp - e.vy) * 0.06;
+      const spd = Math.min(d * 0.04, sp(G, p2 ? K.floatSpdP2 : K.floatSpd) * rage);
+      e.vx += (dx / d * spd - e.vx) * 0.06; e.vy += (dy / d * spd - e.vy) * 0.06;
       e.rot = Math.sin(e.t * 0.04) * 0.15;
       e.a++;
-      if (p2 && e.a % 70 === 0) {
+      if (p2 && e.a % cd(G, K.boltEvery) === 0) {
         const ang = Math.atan2(py - cyOf(e), px - cxOf(e));
-        makeProj(G, 'skullbolt', cxOf(e), cyOf(e) + 20, Math.cos(ang) * 4, Math.sin(ang) * 4, { dmg: 28, src: e.d.name });
+        makeProj(G, 'skullbolt', cxOf(e), cyOf(e) + 20, Math.cos(ang) * 4, Math.sin(ang) * 4, { dmg: K.boltDmg, src: e.d.name, boss: true });
       }
-      if (e.a > (p2 ? 420 : 600)) { e.st = 1; e.a = 0; G.sfx('roar'); }
+      if (e.a > cd(G, p2 ? K.spinEveryP2 : K.spinEvery)) { e.st = 1; e.a = 0; G.sfx('roar'); }
     } else {
-      e.defMul = 2;
+      e.defMul = K.spinDefMul;
       e.rot += 0.35;
-      toward(e, px, py, 0.3, (p2 ? 6.5 : 4.8) * rage);
-      if (++e.a > 280) { e.st = 0; e.a = 0; }
+      toward(e, px, py, 0.3, sp(G, p2 ? K.spinSpdP2 : K.spinSpd) * rage);
+      if (++e.a > K.spinDur) { e.st = 0; e.a = 0; }
     }
     e.x += e.vx; e.y += e.vy;
   },
@@ -420,10 +434,12 @@ const AI = {
     const hx = cxOf(s) + e.side * 95, hy = cyOf(s) + 40 + Math.sin(e.t * 0.05 + e.side) * 12;
     if (e.st === 0) {
       e.vx += (hx - cxOf(e)) * 0.02 - e.vx * 0.15; e.vy += (hy - cyOf(e)) * 0.02 - e.vy * 0.15;
-      if (!p.dead && s.st === 0 && (e.t + (e.side > 0 ? 55 : 0)) % 110 === 0) {
+      const every = cd(G, BK.warden.handEvery);
+      if (!p.dead && s.st === 0 && (e.t + (e.side > 0 ? every >> 1 : 0)) % every === 0) {
         e.st = 1; e.a = 0;
         const dx = p.x + 10 - cxOf(e), dy = p.y + 20 - cyOf(e), d = Math.hypot(dx, dy) || 1;
-        e.vx = dx / d * 9; e.vy = dy / d * 9;
+        const hs = sp(G, BK.warden.handSpd);
+        e.vx = dx / d * hs; e.vy = dy / d * hs;
       }
     } else if (e.st === 1) { if (++e.a > 26) e.st = 2; }
     else { toward(e, hx, hy, 0.6, 9); if (Math.hypot(hx - cxOf(e), hy - cyOf(e)) < 20) e.st = 0; }
@@ -433,21 +449,21 @@ const AI = {
   wall(G, e) {
     const p = G.player, wd = G.world;
     const f = 1 - e.hp / e.maxHp;
-    const phase = f > 0.75 ? 3 : f > 0.5 ? 2 : 1;
-    const sp = 1.1 + f * 2.0 + (phase - 1) * 0.3;
-    e.x += e.mdir * sp;
+    const K = BK.wall, p2f = 1 - D(G).phase2;
+    const phase = f > p2f + (1 - p2f) / 2 ? 3 : f > p2f ? 2 : 1;
+    e.x += e.mdir * sp(G, K.baseSpd + f * K.hurtSpd + (phase - 1) * 0.3);
     const py = p.y + 21;
     const ty = Math.max((wd.hellLine - 20) * 16, Math.min(wd.h * 16 - e.h, py - e.h / 2));
     e.y += (ty - e.y) * 0.05;
     e.t++; e.a++; e.b++;
     const front = e.mdir > 0 ? e.x + e.w : e.x, cy = cyOf(e);
-    if (!p.dead && e.a > [0, 100, 72, 48][phase]) {
+    if (!p.dead && e.a > cd(G, K.laserEvery[phase - 1])) {
       e.a = 0; e.eye = (e.eye || 0) ^ 1;
       const ey = cy + (e.eye ? -180 : 180), dx = p.x + 10 - front, dy = py - ey, d = Math.hypot(dx, dy) || 1;
-      makeProj(G, 'laser', front, ey, dx / d * 11, dy / d * 11, { dmg: 30, src: e.d.name });
+      makeProj(G, 'laser', front, ey, dx / d * K.laserSpd, dy / d * K.laserSpd, { dmg: K.laserDmg, src: e.d.name, boss: true });
       G.sfx('laser');
     }
-    if (!p.dead && e.b > (phase === 3 ? 150 : 230) && G.enemies.filter(q => q.key === 'leech' && !q.dead).length < 4) {
+    if (!p.dead && e.b > cd(G, phase === 3 ? K.leechEveryP3 : K.leechEvery) && G.enemies.filter(q => q.key === 'leech' && !q.dead).length < K.maxLeeches) {
       e.b = 0;
       const l = spawnEnemy(G, 'leech', front, cy + 10);
       l.vx = e.mdir * 5;
@@ -455,7 +471,7 @@ const AI = {
     const pcx = p.x + 10;
     if (!p.dead && ((e.mdir > 0 && pcx < e.x - 30) || (e.mdir < 0 && pcx > e.x + e.w + 30))) {
       p.vx += front > pcx ? 0.6 : -0.6;
-      hurtPlayer(G, 60, e.mdir, 'was consumed by The Cinder Wall');
+      hurtPlayer(G, K.behindDmg * D(G).bossDmg, e.mdir, 'was consumed by The Cinder Wall');
     }
     if (e.x < -e.w || e.x > wd.w * 16) {
       if (!p.dead) killPlayer(G, 'was consumed by The Cinder Wall');
@@ -505,8 +521,13 @@ export function updateEnemies(G) {
     const boxes = hitboxes(e);
     for (let i = 0; i < boxes.length; i++) {
       if (overlaps(boxes[i], p)) {
-        const dmg = (i > 0 && d.worm && d.worm.bodyDmg) ? d.worm.bodyDmg : d.dmg * (e.dmgMul || 1);
-        if (hurtPlayer(G, dmg, sign(pcx - (boxes[i].x + boxes[i].w / 2)), 'was slain by ' + (d.boss ? 'the ' : 'a ') + d.name) && d.inflict) addBuff(p, d.inflict[0], d.inflict[1]);
+        const dmg = ((i > 0 && d.worm && d.worm.bodyDmg) ? d.worm.bodyDmg : d.dmg * (e.dmgMul || 1)) * (d.boss || d.minion ? D(G).bossDmg : D(G).dmg);
+        const side = sign(pcx - (boxes[i].x + boxes[i].w / 2));
+        if (hurtPlayer(G, dmg, side, 'was slain by ' + (d.boss ? 'the ' : 'a ') + d.name)) {
+          if (d.inflict) addBuff(p, d.inflict[0], d.inflict[1]);
+          // small flyers bounce off after landing a hit
+          if (d.ai === 'flyer' || d.ai === 'bat') { e.vx = -side * 3.5; e.vy = -2.5; }
+        }
         break;
       }
     }
@@ -590,7 +611,7 @@ export function updateProjectiles(G) {
         if (--pr.pierce <= 0) { pr.dead = true; break; }
       }
     } else if (!p.dead && overlaps(pr, p)) {
-      if (hurtPlayer(G, pr.dmg, sign(pr.vx), 'was slain by ' + (pr.src || 'a projectile')) && d.inflict) addBuff(p, d.inflict[0], d.inflict[1]);
+      if (hurtPlayer(G, pr.dmg * (pr.boss ? D(G).bossDmg : D(G).dmg), sign(pr.vx), 'was slain by ' + (pr.src || 'a projectile')) && d.inflict) addBuff(p, d.inflict[0], d.inflict[1]);
       pr.dead = true;
     }
     if (Math.abs(pr.x - p.x) > 2400 || Math.abs(pr.y - p.y) > 1600) pr.dead = true;
@@ -616,10 +637,10 @@ export function trySpawn(G) {
   else if (ty > wd.rockLine) { ctx = 'cavern'; cfg = C.under; }
   else if (ty > wd.surfaceLine) { ctx = 'under'; cfg = C.under; }
   else { ctx = G.time.isDay ? 'day' : 'night'; cfg = G.time.isDay ? C.day : C.night; }
-  let rate = cfg.rate, cap = cfg.cap;
+  let rate = cfg.rate / D(G).spawnRate, cap = Math.round(cfg.cap * D(G).spawnCap);
   if (ctx === 'night' && G.time.bloodMoon) { rate /= C.bloodRate; cap *= C.bloodCap; }
   if ((ctx === 'day' || ctx === 'night') && G.townNPCs >= 2) cap = Math.max(1, Math.floor(cap * C.townCap));
-  if (G.boss) cap = Math.ceil(cap / 2);
+  if (G.boss) { cap = Math.ceil(cap * C.bossCap); rate *= C.bossRate; }
   let n = 0;
   for (const e of G.enemies) if (!e.d.boss && !e.d.minion) n++;
   if (n >= cap || Math.random() * rate > 1) return;

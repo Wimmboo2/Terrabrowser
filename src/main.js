@@ -88,6 +88,8 @@ function startPlay(wd, ch, meta, data) {
   resetEntities();
   G.world = wd;
   G.worldMeta = meta;
+  wd.difficulty = CFG.difficulty[wd.difficulty] ? wd.difficulty : 'normal';
+  G.diff = CFG.difficulty[wd.difficulty];
   G.player = createPlayer(ch);
   G.flags = data && data.flags ? data.flags : { bosses: {}, cryptOpen: false, orbs: 0 };
   G.flags.bosses = G.flags.bosses || {};
@@ -112,6 +114,7 @@ function startPlay(wd, ch, meta, data) {
   initMap(G);
   G.state = 'play';
   G.msg('Welcome to ' + wd.name + ', ' + G.player.name + '!', '#ffe050');
+  if (wd.difficulty === 'hard') G.msg('This is a Hard world. Nothing here will go easy on you.', '#ff5050');
   G.msg('A/D move, Space jump, left-click to use, right-click to interact, Esc inventory, M map.', '#b4d2ff');
 }
 
@@ -144,14 +147,15 @@ G.actions = {
   },
   async deleteChar(id) { await delData('char:' + id); await G.actions.refreshLists(); },
   async deleteWorld(id) { await delData('world:' + id); await delData('wmeta:' + id); await G.actions.refreshLists(); },
-  async createWorld(name, seedText) {
+  async createWorld(name, seedText, difficulty = 'normal') {
     const M = G.menu;
     if (!M.char) { M.screen = 'chars'; return; }
     M.screen = 'loading'; M.loading = { title: 'Generating ' + name, text: 'Starting', frac: 0 };
     const seed = hashSeed(seedText);
     const wd = await generateWorld(seed, name, (t, f) => { M.loading.text = t; M.loading.frac = f; });
     wd.id = 'w' + Date.now().toString(36);
-    const meta = { id: wd.id, name, seedText: String(seedText), seed, created: Date.now(), played: Date.now() };
+    wd.difficulty = CFG.difficulty[difficulty] ? difficulty : 'normal';
+    const meta = { id: wd.id, name, seedText: String(seedText), seed, difficulty: wd.difficulty, created: Date.now(), played: Date.now() };
     startPlay(wd, M.char, meta, null);
     await saveGame(false);
   },
@@ -186,6 +190,7 @@ function pickMusic() {
 }
 function tick() {
   G.tick++;
+  if (G.onTick) G.onTick(G);
   if (G.state === 'play') {
     const z = settings.zoom;
     G.mouseW = { x: (R.cx != null ? R.cx : G.cam.x) + input.mouse.x / z, y: (R.cy != null ? R.cy : G.cam.y) + input.mouse.y / z };
@@ -240,12 +245,13 @@ function frame(now) {
   let dt = now - last;
   last = now;
   if (dt > 250) dt = 250;
-  acc += dt;
+  acc += dt * (G.timeScale || 1);
   let n = 0;
   const tt = performance.now();
-  while (acc >= CFG.STEP && n < 5) { tick(); acc -= CFG.STEP; n++; }
+  const maxSteps = 5 * (G.timeScale || 1);
+  while (acc >= CFG.STEP && n < maxSteps) { tick(); acc -= CFG.STEP; n++; }
   if (n) perf.tick += ((performance.now() - tt) / n - perf.tick) * 0.1;
-  if (n === 5) acc = 0;
+  if (n >= maxSteps) acc = 0;
   render(acc / CFG.STEP);
   requestAnimationFrame(frame);
 }

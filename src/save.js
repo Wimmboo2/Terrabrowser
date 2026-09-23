@@ -90,7 +90,7 @@ export function rleDecode(runs, Ctor, len) {
 export function packWorld(G) {
   const wd = G.world;
   return {
-    v: 1, id: wd.id, name: wd.name, seed: wd.seed, w: wd.w, h: wd.h,
+    v: 1, id: wd.id, name: wd.name, seed: wd.seed, w: wd.w, h: wd.h, difficulty: wd.difficulty || 'normal',
     tile: rleEncode(wd.tile), wall: rleEncode(wd.wall), meta: rleEncode(wd.meta), liq: rleEncode(wd.liq), ltype: rleEncode(wd.ltype), explored: rleEncode(wd.explored),
     surf: Int16Array.from(wd.surf),
     lines: [wd.surfaceLine, wd.rockLine, wd.hellLine], spawn: [wd.spawnX, wd.spawnY],
@@ -102,7 +102,7 @@ export function packWorld(G) {
 }
 export function unpackWorld(d) {
   const wd = createWorld(d.w, d.h), n = d.w * d.h;
-  wd.id = d.id; wd.name = d.name; wd.seed = d.seed;
+  wd.id = d.id; wd.name = d.name; wd.seed = d.seed; wd.difficulty = d.difficulty || 'normal';
   wd.tile = rleDecode(d.tile, Uint16Array, n); wd.wall = rleDecode(d.wall, Uint8Array, n); wd.meta = rleDecode(d.meta, Uint8Array, n);
   wd.liq = rleDecode(d.liq, Uint8Array, n); wd.ltype = rleDecode(d.ltype, Uint8Array, n); wd.explored = rleDecode(d.explored, Uint8Array, n);
   wd.surf = Int16Array.from(d.surf);

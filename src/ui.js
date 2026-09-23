@@ -636,7 +636,7 @@ function drawWorldMap(G, ctx) {
   ctx.fillStyle = 'rgba(0,0,0,0.9)'; ctx.fillRect(0, 0, W, H);
   drawMapView(G, ctx, 20, 50, W - 40, H - 80, U.mapZoom, U.mapC[0], U.mapC[1]);
   rrect(ctx, 16, 46, W - 32, H - 72, 8, null, '#2c3a90', 4);
-  text(ctx, 'World Map  -  ' + G.world.name, W / 2, 34, '#fff', 20, 'center');
+  text(ctx, 'World Map  -  ' + G.world.name + (G.world.difficulty === 'hard' ? '  (Hard)' : ''), W / 2, 34, '#fff', 20, 'center');
   text(ctx, 'Scroll to zoom, drag to pan, M or Esc to close', W / 2, H - 8, '#b4d2ff', 14, 'center');
 }
 
@@ -833,6 +833,7 @@ export function menuDraw(G, ctx) {
       const y = py + 14 + k * 72, hv = hov(G, px + 10, y, pw - 20, 64);
       rrect(ctx, px + 10, y, pw - 20, 64, 6, hv ? 'rgba(80,100,200,0.9)' : 'rgba(56,72,160,0.8)', '#141c46', 2);
       text(ctx, w.name, px + 24, y + 30, '#fff', 20);
+      if (w.difficulty === 'hard') { ctx.font = `bold 20px ${FONT}`; text(ctx, 'HARD', px + 34 + ctx.measureText(w.name).width, y + 30, '#ff4040', 14); }
       text(ctx, 'Seed: ' + w.seedText + '   Played: ' + new Date(w.played).toLocaleDateString(), px + 24, y + 52, '#b4d2ff', 13);
       reg(G, px + 10, y, pw - 110, 64, () => G.actions.playWorld(w));
       const dx = px + pw - 90, dh = hov(G, dx, y + 18, 70, 28);
@@ -840,21 +841,30 @@ export function menuDraw(G, ctx) {
       reg(G, dx, y + 18, 70, 28, () => { if (M.confirm === w.id) { G.actions.deleteWorld(w.id); M.confirm = null; } else M.confirm = w.id; });
     });
     if (!M.worlds.length) text(ctx, 'No worlds yet.', W / 2, py + 60, '#c8c8c8', 18, 'center');
-    menuButton(G, ctx, 'New World', W / 2 - 130, py + 440, () => { M.fields.wname = 'World ' + (M.worlds.length + 1); M.fields.seed = String(Math.floor(Math.random() * 1e9)); M.screen = 'newworld'; });
+    menuButton(G, ctx, 'New World', W / 2 - 130, py + 440, () => { M.fields.wname = 'World ' + (M.worlds.length + 1); M.fields.seed = String(Math.floor(Math.random() * 1e9)); M.fields.diff = 'normal'; M.screen = 'newworld'; });
     menuButton(G, ctx, 'Back', W / 2 + 150, py + 440, () => { M.screen = 'chars'; });
   } else if (scr === 'newworld') {
     const pw = Math.min(520, W - 40), px = W / 2 - pw / 2, py = 110;
     text(ctx, 'Create World', W / 2, 70, '#fff', 30, 'center');
-    panel(ctx, px, py, pw, 260);
+    panel(ctx, px, py, pw, 330);
     textField(G, ctx, 'wname', 'World name', px + 30, py + 50, pw - 60, 24);
     textField(G, ctx, 'seed', 'Seed (text or number)', px + 30, py + 130, pw - 190, 24);
     const bx = px + pw - 150;
     rrect(ctx, bx, py + 130, 120, 36, 6, hov(G, bx, py + 130, 120, 36) ? 'rgba(90,110,220,0.95)' : 'rgba(44,58,144,0.9)', '#0c1030', 2);
     text(ctx, 'Random', bx + 60, py + 155, '#fff', 16, 'center');
     reg(G, bx, py + 130, 120, 36, () => { M.fields.seed = String(Math.floor(Math.random() * 1e9)); });
-    text(ctx, 'Size: 1600 x 600 tiles', px + 30, py + 210, '#b4d2ff', 14);
-    menuButton(G, ctx, 'Create', W / 2 - 90, py + 320, () => G.actions.createWorld((M.fields.wname || 'World').trim() || 'World', M.fields.seed || '0'));
-    menuButton(G, ctx, 'Back', W / 2 + 110, py + 320, () => { M.screen = 'worlds'; });
+    const diff = M.fields.diff || 'normal';
+    text(ctx, 'Difficulty', px + 30, py + 202, '#fff', 16);
+    [['normal', 'Normal', '#5ac040'], ['hard', 'Hard', '#e03030']].forEach(([key, label, col], k) => {
+      const dbx = px + 30 + k * 140, dby = py + 212, on = diff === key;
+      rrect(ctx, dbx, dby, 128, 36, 6, on ? col : hov(G, dbx, dby, 128, 36) ? 'rgba(90,110,220,0.95)' : 'rgba(44,58,144,0.9)', on ? '#fff' : '#0c1030', 2);
+      text(ctx, label, dbx + 64, dby + 25, '#fff', 17, 'center');
+      reg(G, dbx, dby, 128, 36, () => { M.fields.diff = key; });
+    });
+    text(ctx, diff === 'hard' ? 'Diabolical. Enemies hit twice as hard, bosses are brutal. Good luck.' : 'The classic experience.', px + 30, py + 272, diff === 'hard' ? '#ff6060' : '#b4d2ff', 14);
+    text(ctx, 'Size: 1600 x 600 tiles', px + 30, py + 305, '#b4d2ff', 14);
+    menuButton(G, ctx, 'Create', W / 2 - 90, py + 390, () => G.actions.createWorld((M.fields.wname || 'World').trim() || 'World', M.fields.seed || '0', diff));
+    menuButton(G, ctx, 'Back', W / 2 + 110, py + 390, () => { M.screen = 'worlds'; });
   } else if (scr === 'loading') {
     ctx.fillStyle = 'rgba(0,0,0,0.55)'; ctx.fillRect(0, 0, W, H);
     text(ctx, M.loading.title || 'Generating world', W / 2, H / 2 - 50, '#fff', 30, 'center');

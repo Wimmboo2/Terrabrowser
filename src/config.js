@@ -29,12 +29,12 @@ export const CFG = {
   day: { dayTicks: 32400, nightTicks: 21600, start: 2400 },
 
   spawn: {
-    day: { rate: 380, cap: 4 },
-    night: { rate: 170, cap: 7 },
-    under: { rate: 220, cap: 6 },
+    day: { rate: 450, cap: 4 },
+    night: { rate: 540, cap: 5 },
+    under: { rate: 300, cap: 6 },
     hell: { rate: 150, cap: 6 },
     crypt: { rate: 110, cap: 8 },
-    bloodRate: 3, bloodCap: 2, townCap: 0.34,
+    bloodRate: 3, bloodCap: 2, townCap: 0.34, bossRate: 5, bossCap: 0.34,
     despawn: 90, minDist: 34, maxDist: 56,
   },
 
@@ -50,6 +50,44 @@ export const CFG = {
     { id: 'aurelium', name: 'Aurelium', pal: 'aurelium', sword: { dmg: 19, ut: 19, kb: 6.5, len: 40 }, pick: { pow: 65, dmg: 10, ut: 16 }, axe: { pow: 15, dmg: 10, ut: 21 }, bow: { dmg: 13, ut: 25, vel: 9 }, armor: [5, 6, 5], setDef: 5, rar: 1, val: 1200 },
   ],
   cindrite: { armor: [7, 9, 7], dmgBonus: 0.12 },
+
+  // Enemy + boss stats (merged into EN in enemies.js). coin is in bronze bits.
+  enemies: {
+    gelhopper: { hp: 14, dmg: 7, def: 0, coin: 20 },
+    dunegel: { hp: 26, dmg: 12, def: 3, coin: 40 },
+    cavegel: { hp: 36, dmg: 15, def: 5, coin: 60 },
+    shambler: { hp: 45, dmg: 12, def: 6, coin: 60 },
+    peeper: { hp: 60, dmg: 15, def: 2, coin: 75 },
+    flitter: { hp: 18, dmg: 13, def: 2, coin: 40 },
+    magmabat: { hp: 45, dmg: 30, def: 10, coin: 200 },
+    grub: { hp: 40, dmg: 14, def: 4, coin: 80 },
+    ossling: { hp: 70, dmg: 20, def: 8, coin: 120 },
+    scuttler: { hp: 50, dmg: 12, def: 6, coin: 120 },
+    frostimp: { hp: 55, dmg: 18, def: 6, coin: 130 },
+    snapvine: { hp: 80, dmg: 26, def: 8, coin: 150 },
+    rotflier: { hp: 45, dmg: 22, def: 8, coin: 120 },
+    caster: { hp: 90, dmg: 30, def: 10, coin: 300 },
+    emberimp: { hp: 90, dmg: 32, def: 14, coin: 400 },
+    servant: { hp: 10, dmg: 8, def: 0, coin: 0 },
+    leech: { hp: 40, dmg: 18, def: 6, coin: 0 },
+    omni: { hp: 1500, dmg: 12, def: 6, coin: 50000 },
+    rotmaw: { hp: 2600, dmg: 25, def: 4, coin: 80000 },
+    warden: { hp: 2700, dmg: 22, def: 10, coin: 100000 },
+    hand: { hp: 500, dmg: 18, def: 14, coin: 0 },
+    wall: { hp: 4900, dmg: 50, def: 12, coin: 200000 },
+  },
+  // Boss behavior knobs. Cooldowns are in ticks (60 = 1 second), speeds in px/tick.
+  bosses: {
+    omni: { hover: 220, hoverP2: 110, charges: 3, chargesP2: 4, chargeSpd: 8.5, chargeSpdP2: 11.5, chargeDur: 46, chargeDurP2: 32, servantEvery: 110, maxServants: 2, p2DmgMul: 1.35 },
+    rotmaw: { speed: 8.5, accel: 0.33, airSteer: 0.45, bodyDmg: 12, p2Speed: 1.25, spitEvery: 45, spitDmg: 22 },
+    warden: { floatSpd: 3.5, floatSpdP2: 4.5, spinEvery: 600, spinEveryP2: 420, spinDur: 220, spinSpd: 3.8, spinSpdP2: 5, spinDefMul: 1.5, boltEvery: 70, boltDmg: 22, handEvery: 150, handSpd: 9 },
+    wall: { baseSpd: 1.1, hurtSpd: 2.0, laserEvery: [110, 80, 55], laserDmg: 24, laserSpd: 11, leechEvery: 300, leechEveryP3: 200, maxLeeches: 3, behindDmg: 60 },
+  },
+  // World difficulty presets, chosen at world creation.
+  difficulty: {
+    normal: { label: 'Normal', enemyHp: 1, bossHp: 1, dmg: 1, bossDmg: 1, speed: 1, cooldown: 1, phase2: 0.5, spawnRate: 1, spawnCap: 1, regen: 1, sick: 1, coins: 1, extraLoot: 0, kb: 1 },
+    hard: { label: 'Hard', enemyHp: 1.8, bossHp: 1.8, dmg: 1.7, bossDmg: 1.4, speed: 1.1, cooldown: 0.7, phase2: 0.7, spawnRate: 2, spawnCap: 1.5, regen: 0.5, sick: 1.5, coins: 2.5, extraLoot: 1, kb: 1.3 },
+  },
 
   // mining: each hit deals tool power; tile breaks when accumulated >= tile hp
   tileDecay: 300,

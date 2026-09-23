@@ -169,7 +169,10 @@ export function updatePlayer(G) {
   p.regenT++;
   if (!hasB('fire') && !hasB('poison') && G.tick % 60 === 0 && !p.dead) {
     const rate = (p.regenT > 900 ? 2 : p.regenT > 360 ? 1 : 0) + p.stats.regen * 2;
-    p.hp = Math.min(p.lifeMax, p.hp + rate);
+    p.regenAcc = (p.regenAcc || 0) + rate * (G.diff ? G.diff.regen : 1);
+    const heal = Math.floor(p.regenAcc);
+    p.regenAcc -= heal;
+    p.hp = Math.min(p.lifeMax, p.hp + heal);
   }
   p.manaT++;
   if (p.manaT > 50 && p.mana < p.maxMana && G.tick % (Math.abs(p.vx) < 0.1 ? 3 : 6) === 0) p.mana++;
@@ -346,7 +349,7 @@ function consume(G, id, idx) {
   if (d.heal) {
     if (p.buffs.some(b => b.id === 'sick')) return;
     const h = Math.min(d.heal, p.lifeMax - p.hp);
-    p.hp += h; addBuff(p, 'sick', PC.potionSick);
+    p.hp += h; addBuff(p, 'sick', Math.round(PC.potionSick * (G.diff ? G.diff.sick : 1)));
     G.fx.text(p.x + 10, p.y - 4, h, '#50ff78');
   }
   if (d.manaRestore) { const m = Math.min(d.manaRestore, p.maxMana - p.mana); p.mana += m; G.fx.text(p.x + 10, p.y - 4, m, '#5080ff'); }
