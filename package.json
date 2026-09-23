@@ -1,0 +1,10 @@
+{
+  "name": "terrabrowser",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "A 2D sandbox action-adventure game for the browser. Vanilla JS + Canvas, no dependencies.",
+  "scripts": {
+    "start": "npx serve ."
+  }
+}
