@@ -11,9 +11,9 @@ const P = CFG.phys, PC = CFG.player;
 
 export function newCharacter(name, look) {
   const inv = new Array(50).fill(null);
-  inv[0] = { id: 'brassine_sword', n: 1 };
-  inv[1] = { id: 'brassine_pickaxe', n: 1 };
-  inv[2] = { id: 'brassine_axe', n: 1 };
+  inv[0] = { id: 'copper_sword', n: 1 };
+  inv[1] = { id: 'copper_pickaxe', n: 1 };
+  inv[2] = { id: 'copper_axe', n: 1 };
   return { id: 'c' + Date.now().toString(36), name, look, inv, coins: [null, null, null, null], armor: [null, null, null], acc: [null, null, null], maxHp: PC.hp, maxMana: PC.mana, created: Date.now() };
 }
 export function charData(p) {
@@ -35,7 +35,7 @@ export function createPlayer(ch) {
 }
 
 export function recalcStats(p) {
-  const s = { def: 0, speed: 0, dmg: 0, crit: 0, doubleJump: 0, noFall: 0, light: 0, kbImmune: 0, regen: 0, fireImmune: 0, maxHp: 0 };
+  const s = { def: 0, speed: 0, dmg: 0, crit: 0, doubleJump: 0, noFall: 0, light: 0, kbImmune: 0, regen: 0, fireImmune: 0, maxHp: 0, slimeFriend: 0, dreadImmune: 0, chillImmune: 0 };
   for (const a of p.armor) if (a) s.def += ITEMS[a.id].def || 0;
   p.setBonus = null;
   const sets = p.armor.map(a => a && ITEMS[a.id].set);

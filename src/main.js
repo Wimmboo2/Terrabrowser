@@ -53,6 +53,7 @@ import { updateLiquids } from './liquids.js';
 import { initTime, updateTime, updateEvents, skyState, detectZone } from './events.js';
 import { createUI, uiUpdate, uiDraw, menuUpdate, menuDraw, initMap, randomLook } from './ui.js';
 import { solidAt } from './world.js';
+import { migrateChar } from './items.js';
 
 const canvas = document.getElementById('game');
 const input = createInput(canvas);
@@ -86,6 +87,10 @@ function resetEntities() {
 }
 function startPlay(wd, ch, meta, data) {
   resetEntities();
+  // drop any menu text focus and stale key/mouse state so controls work from the first tick
+  G.menu.focus = null; input.text = null;
+  input.down.clear(); input.pressed.clear();
+  Object.assign(input.mouse, { l: false, r: false, lp: false, rp: false, wheel: 0 });
   G.world = wd;
   G.worldMeta = meta;
   wd.difficulty = CFG.difficulty[wd.difficulty] ? wd.difficulty : 'normal';
@@ -133,7 +138,7 @@ G.actions = {
   async refreshLists() {
     const M = G.menu;
     const ck = await listKeys('char:');
-    M.chars = (await Promise.all(ck.map(k => getData(k)))).filter(Boolean).sort((a, b) => b.created - a.created);
+    M.chars = (await Promise.all(ck.map(k => getData(k)))).filter(Boolean).map(migrateChar).sort((a, b) => b.created - a.created);
     const wk = await listKeys('wmeta:');
     M.worlds = (await Promise.all(wk.map(k => getData(k)))).filter(Boolean).sort((a, b) => b.played - a.played);
     if (M.char) M.char = M.chars.find(c => c.id === M.char.id) || M.char;
@@ -168,7 +173,7 @@ G.actions = {
     M.loading.text = 'Unpacking'; M.loading.frac = 0.7;
     await new Promise(r => setTimeout(r, 0));
     const wd = unpackWorld(data);
-    const ch = (await getData('char:' + M.char.id)) || M.char;
+    const ch = migrateChar((await getData('char:' + M.char.id)) || M.char);
     startPlay(wd, ch, meta, data);
   },
   save(auto) { saveGame(auto); },

@@ -5,7 +5,7 @@ export const T = {
   WOOD: 19, PLATFORM: 20, TORCH: 21, TREE: 22, CACTUS: 23, DOOR: 24, DOOR_OPEN: 25, WORKBENCH: 26,
   FURNACE: 27, ANVIL: 28, ALEMBIC: 29, FORGE: 30, CHEST: 31, TABLE: 32, CHAIR: 33, BED: 34, POT: 35,
   ORB: 36, CRYSTAL: 37, VINE: 38, PLANT: 39, GLOWCAP: 40, SAPLING: 41, GLASS: 42, CRYPT_DOOR: 43,
-  BELL: 44, CLOUD: 45, EMBER: 46, SANDSTONE: 47,
+  BELL: 44, CLOUD: 45, EMBER: 46, SANDSTONE: 47, ORE6: 48,
 };
 
 // tex: procedural texture style; pal: [light, mid, dark, accent]
@@ -28,11 +28,11 @@ def(T.JGRASS, { name: 'Jungle Grass', solid: true, hp: 50, drop: 'mud', map: [11
 def(T.ASH, { name: 'Ash', solid: true, hp: 60, drop: 'ash', map: [90, 81, 87], tex: 'sand', pal: ['#786e76', '#5a5157', '#3c3539', '#2e282b'] });
 def(T.BLIGHT, { name: 'Blightstone', solid: true, hp: 150, minPick: 45, drop: 'blightstone', map: [110, 90, 134], tex: 'stone', pal: ['#8d77a8', '#6e5a86', '#4a3a5e', '#3a2c4c'], sound: 'stone' });
 def(T.BGRASS, { name: 'Blightgrass', solid: true, hp: 50, drop: 'dirt', map: [154, 111, 200], tex: 'dirt', pal: ['#b88a64', '#976b4b', '#6b4a33', '#5a3d2a'], grass: ['#c7a0ec', '#9a6fc8', '#6a46a0'] });
-def(T.ORE1, { name: 'Brassine Ore', solid: true, hp: 150, minPick: 0, drop: 'brassine_ore', map: [224, 144, 78], tex: 'ore', pal: ['#a3a3ad', '#7d7d86', '#55555e', '#f0a060', '#c06a30'], sound: 'stone' });
-def(T.ORE2, { name: 'Grelite Ore', solid: true, hp: 170, minPick: 35, drop: 'grelite_ore', map: [176, 190, 206], tex: 'ore', pal: ['#a3a3ad', '#7d7d86', '#55555e', '#dce6f0', '#7a8a9a'], sound: 'stone' });
-def(T.ORE3, { name: 'Veridium Ore', solid: true, hp: 200, minPick: 45, drop: 'veridium_ore', map: [80, 214, 160], tex: 'ore', pal: ['#a3a3ad', '#7d7d86', '#55555e', '#7ff0c0', '#2f9e78'], sound: 'stone' });
-def(T.ORE4, { name: 'Aurelium Ore', solid: true, hp: 230, minPick: 55, drop: 'aurelium_ore', map: [240, 204, 72], tex: 'ore', pal: ['#a3a3ad', '#7d7d86', '#55555e', '#ffe878', '#d0a020'], sound: 'stone' });
-def(T.ORE5, { name: 'Cindrite Ore', solid: true, hp: 250, minPick: 100, drop: 'cindrite_ore', map: [255, 96, 40], tex: 'ore', pal: ['#5a4a4a', '#3c3032', '#261e20', '#ff8a3a', '#c8341a'], light: [0.7, 0.28, 0.1], sound: 'stone' });
+def(T.ORE1, { name: 'Copper Ore', solid: true, hp: 150, minPick: 0, drop: 'copper_ore', map: [224, 144, 78], tex: 'ore', pal: ['#a3a3ad', '#7d7d86', '#55555e', '#f0a060', '#c06a30'], sound: 'stone' });
+def(T.ORE2, { name: 'Iron Ore', solid: true, hp: 170, minPick: 35, drop: 'iron_ore', map: [160, 136, 114], tex: 'ore', pal: ['#a3a3ad', '#7d7d86', '#55555e', '#d6bea4', '#8a6c52'], sound: 'stone' });
+def(T.ORE3, { name: 'Silver Ore', solid: true, hp: 200, minPick: 45, drop: 'silver_ore', map: [196, 206, 222], tex: 'ore', pal: ['#a3a3ad', '#7d7d86', '#55555e', '#f4f8ff', '#a4b0c2'], sound: 'stone' });
+def(T.ORE4, { name: 'Gold Ore', solid: true, hp: 230, minPick: 55, drop: 'gold_ore', map: [240, 204, 72], tex: 'ore', pal: ['#a3a3ad', '#7d7d86', '#55555e', '#ffe878', '#d0a020'], sound: 'stone' });
+def(T.ORE5, { name: 'Hellstone', solid: true, hp: 250, minPick: 100, drop: 'hellstone_ore', map: [255, 96, 40], tex: 'ore', pal: ['#5a4a4a', '#3c3032', '#261e20', '#ff8a3a', '#c8341a'], light: [0.7, 0.28, 0.1], sound: 'stone' });
 def(T.SCORIA, { name: 'Scoria', solid: true, hp: 250, minPick: 55, drop: 'scoria', map: [46, 34, 56], tex: 'stone', pal: ['#4a3a5a', '#2e2238', '#1a1222', '#140e1a'], sound: 'stone' });
 def(T.CRYPT, { name: 'Crypt Brick', solid: true, hp: 200, minPick: 65, drop: 'crypt_brick', map: [79, 95, 138], tex: 'brick', pal: ['#6d7fae', '#4f5f8a', '#333f60', '#252e48'], sound: 'stone', locked: true });
 def(T.WOOD, { name: 'Wood', solid: true, hp: 80, drop: 'wood', map: [168, 115, 63], tex: 'plank', pal: ['#c48a52', '#a8733f', '#7a5230', '#5e3e24'], sound: 'wood' });
@@ -46,7 +46,7 @@ def(T.WORKBENCH, { name: 'Workbench', hp: 40, tool: 'any', drop: 'workbench', fu
 def(T.FURNACE, { name: 'Furnace', hp: 60, tool: 'any', drop: 'furnace', furn: { w: 3, h: 2 }, map: [140, 140, 140], station: 'furnace', light: [0.8, 0.45, 0.2], sound: 'stone' });
 def(T.ANVIL, { name: 'Anvil', hp: 60, tool: 'any', drop: 'anvil', furn: { w: 2, h: 1 }, map: [120, 130, 140], station: 'anvil', sound: 'stone' });
 def(T.ALEMBIC, { name: 'Alembic Table', hp: 40, tool: 'any', drop: 'alembic', furn: { w: 2, h: 2 }, map: [191, 142, 111], station: 'alembic', table: true, sound: 'wood' });
-def(T.FORGE, { name: 'Cinder Forge', hp: 80, tool: 'any', drop: 'cinder_forge', furn: { w: 3, h: 2 }, map: [180, 70, 40], station: 'forge', light: [1.0, 0.45, 0.2], sound: 'stone' });
+def(T.FORGE, { name: 'Hellforge', hp: 80, tool: 'any', drop: 'hellforge', furn: { w: 3, h: 2 }, map: [180, 70, 40], station: 'forge', light: [1.0, 0.45, 0.2], sound: 'stone' });
 def(T.CHEST, { name: 'Chest', hp: 40, tool: 'any', drop: 'chest', furn: { w: 2, h: 2 }, map: [174, 129, 80], sound: 'wood' });
 def(T.TABLE, { name: 'Table', hp: 40, tool: 'any', drop: 'table', furn: { w: 3, h: 2 }, map: [191, 142, 111], table: true, sound: 'wood' });
 def(T.CHAIR, { name: 'Chair', hp: 40, tool: 'any', drop: 'chair', furn: { w: 1, h: 2 }, map: [191, 142, 111], chair: true, sound: 'wood' });
@@ -63,6 +63,7 @@ def(T.CRYPT_DOOR, { name: 'Sealed Crypt Door', solid: true, hp: 999, tool: 'none
 def(T.BELL, { name: 'Grave Bell', hp: 999, tool: 'none', furn: { w: 1, h: 2 }, map: [150, 150, 120], sound: 'stone' });
 def(T.CLOUD, { name: 'Cloud', solid: true, hp: 30, drop: 'cloud', map: [230, 236, 250], tex: 'cloud', pal: ['#ffffff', '#eef2fc', '#c8d4ea', '#aab8d4'] });
 def(T.EMBER, { name: 'Emberbrick', solid: true, hp: 200, minPick: 65, drop: 'emberbrick', map: [122, 58, 42], tex: 'brick', pal: ['#9a5038', '#7a3a2a', '#4e2218', '#3a180f'], sound: 'stone' });
+def(T.ORE6, { name: 'Demonite Ore', solid: true, hp: 240, minPick: 60, drop: 'demonite_ore', map: [112, 88, 176], tex: 'ore', pal: ['#8d77a8', '#6e5a86', '#4a3a5e', '#b88cff', '#5a2aa8'], sound: 'stone' });
 def(T.SANDSTONE, { name: 'Sandstone', solid: true, hp: 100, drop: 'sandstone', map: [201, 162, 102], tex: 'stone', pal: ['#dcb880', '#c9a266', '#9a7a48', '#846638'], sound: 'stone' });
 export const TILE = D;
 

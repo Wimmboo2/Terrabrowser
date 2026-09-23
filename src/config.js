@@ -44,12 +44,12 @@ export const CFG = {
 
   // Balance per ore tier. Each step is ~+30% melee DPS and a clear defense jump.
   tiers: [
-    { id: 'brassine', name: 'Brassine', pal: 'brassine', sword: { dmg: 9, ut: 22, kb: 5, len: 32 }, pick: { pow: 35, dmg: 5, ut: 19 }, axe: { pow: 9, dmg: 4, ut: 24 }, bow: null, armor: [1, 2, 1], setDef: 2, rar: 0, val: 150 },
-    { id: 'grelite', name: 'Grelite', pal: 'grelite', sword: { dmg: 12, ut: 21, kb: 5.5, len: 36 }, pick: { pow: 45, dmg: 6, ut: 18 }, axe: { pow: 11, dmg: 6, ut: 23 }, bow: { dmg: 8, ut: 27, vel: 8 }, armor: [2, 3, 2], setDef: 3, rar: 0, val: 300 },
-    { id: 'veridium', name: 'Veridium', pal: 'veridium', sword: { dmg: 15, ut: 20, kb: 6, len: 38 }, pick: { pow: 55, dmg: 8, ut: 17 }, axe: { pow: 13, dmg: 8, ut: 22 }, bow: null, armor: [3, 5, 3], setDef: 4, rar: 1, val: 600 },
-    { id: 'aurelium', name: 'Aurelium', pal: 'aurelium', sword: { dmg: 19, ut: 19, kb: 6.5, len: 40 }, pick: { pow: 65, dmg: 10, ut: 16 }, axe: { pow: 15, dmg: 10, ut: 21 }, bow: { dmg: 13, ut: 25, vel: 9 }, armor: [5, 6, 5], setDef: 5, rar: 1, val: 1200 },
+    { id: 'copper', name: 'Copper', pal: 'copper', sword: { dmg: 9, ut: 22, kb: 5, len: 32 }, pick: { pow: 35, dmg: 5, ut: 19 }, axe: { pow: 9, dmg: 4, ut: 24 }, bow: null, armor: [1, 2, 1], setDef: 2, rar: 0, val: 150 },
+    { id: 'iron', name: 'Iron', pal: 'iron', sword: { dmg: 12, ut: 21, kb: 5.5, len: 36 }, pick: { pow: 45, dmg: 6, ut: 18 }, axe: { pow: 11, dmg: 6, ut: 23 }, bow: { dmg: 8, ut: 27, vel: 8 }, armor: [2, 3, 2], setDef: 3, rar: 0, val: 300 },
+    { id: 'silver', name: 'Silver', pal: 'silver', sword: { dmg: 15, ut: 20, kb: 6, len: 38 }, pick: { pow: 55, dmg: 8, ut: 17 }, axe: { pow: 13, dmg: 8, ut: 22 }, bow: null, armor: [3, 5, 3], setDef: 4, rar: 1, val: 600 },
+    { id: 'gold', name: 'Gold', pal: 'gold', sword: { dmg: 19, ut: 19, kb: 6.5, len: 40 }, pick: { pow: 65, dmg: 10, ut: 16 }, axe: { pow: 15, dmg: 10, ut: 21 }, bow: { dmg: 13, ut: 25, vel: 9 }, armor: [5, 6, 5], setDef: 5, rar: 1, val: 1200 },
   ],
-  cindrite: { armor: [7, 9, 7], dmgBonus: 0.12 },
+  molten: { armor: [7, 9, 7], dmgBonus: 0.12 },
 
   // Enemy + boss stats (merged into EN in enemies.js). coin is in bronze bits.
   enemies: {
@@ -70,10 +70,14 @@ export const CFG = {
     emberimp: { hp: 90, dmg: 32, def: 14, coin: 400 },
     servant: { hp: 10, dmg: 8, def: 0, coin: 0 },
     leech: { hp: 40, dmg: 18, def: 6, coin: 0 },
+    hungry: { hp: 90, dmg: 22, def: 8, coin: 0 },
+    shadowhand: { hp: 30, dmg: 18, def: 0, coin: 0 },
+    monarch: { hp: 1100, dmg: 12, def: 6, coin: 30000 },
     omni: { hp: 1500, dmg: 12, def: 6, coin: 50000 },
     rotmaw: { hp: 2600, dmg: 25, def: 4, coin: 80000 },
     warden: { hp: 2700, dmg: 22, def: 10, coin: 100000 },
     hand: { hp: 500, dmg: 18, def: 14, coin: 0 },
+    rimehorn: { hp: 3000, dmg: 22, def: 12, coin: 90000 },
     wall: { hp: 4900, dmg: 50, def: 12, coin: 200000 },
   },
   // Boss behavior knobs. Cooldowns are in ticks (60 = 1 second), speeds in px/tick.
@@ -81,7 +85,9 @@ export const CFG = {
     omni: { hover: 220, hoverP2: 110, charges: 3, chargesP2: 4, chargeSpd: 8.5, chargeSpdP2: 11.5, chargeDur: 46, chargeDurP2: 32, servantEvery: 110, maxServants: 2, p2DmgMul: 1.35 },
     rotmaw: { speed: 8.5, accel: 0.33, airSteer: 0.45, bodyDmg: 12, p2Speed: 1.25, spitEvery: 45, spitDmg: 22 },
     warden: { floatSpd: 3.5, floatSpdP2: 4.5, spinEvery: 600, spinEveryP2: 420, spinDur: 220, spinSpd: 3.8, spinSpdP2: 5, spinDefMul: 1.5, boltEvery: 70, boltDmg: 22, handEvery: 150, handSpd: 9 },
-    wall: { baseSpd: 1.1, hurtSpd: 2.0, laserEvery: [110, 80, 55], laserDmg: 24, laserSpd: 11, leechEvery: 300, leechEveryP3: 200, maxLeeches: 3, behindDmg: 60 },
+    wall: { baseSpd: 1.1, hurtSpd: 2.0, laserEvery: [110, 80, 55], laserDmg: 24, laserSpd: 11, leechEvery: 300, leechEveryP3: 200, maxLeeches: 3, behindDmg: 60, hungries: 4, hungryLeash: 230, hungrySpd: 4 },
+    monarch: { wait: 36, hop: 3.2, hopVy: 6.2, big: 4.4, bigVy: 10.5, bigEvery: 3, teleEvery: 660, teleFar: 38, split: 0.05, maxSlimes: 8, minScale: 0.55 },
+    rimehorn: { walk: 1.25, walkP2: 1.65, attackEvery: 160, attackEveryP2: 115, spikeDmg: 26, spikeLen: 14, spikeLenP2: 20, spikeStep: 3, spikeDelay: 16, roarRange: 700, roarDmg: 20, dread: 480, debris: 8, debrisDmg: 20, handsEvery: 420, maxHands: 3 },
   },
   // World difficulty presets, chosen at world creation.
   difficulty: {

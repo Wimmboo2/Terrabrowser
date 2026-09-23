@@ -1,5 +1,6 @@
 // Persistence: IndexedDB with localStorage fallback. World arrays are RLE-compressed.
 import { createWorld, computeSkyTop } from './world.js';
+import { migrateSlots } from './items.js';
 
 const DB = 'terrabrowser', STORE = 'saves', LS = 'tb:';
 let dbp = null;
@@ -110,6 +111,7 @@ export function unpackWorld(d) {
   [wd.spawnX, wd.spawnY] = d.spawn;
   wd.blightX = d.blightX; wd.cryptX = d.cryptX; wd.cryptY = d.cryptY; wd.cryptDoor = d.cryptDoor;
   wd.chests = new Map(d.chests);
+  for (const items of wd.chests.values()) migrateSlots(items);
   computeSkyTop(wd);
   return wd;
 }

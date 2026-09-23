@@ -36,20 +36,20 @@ add('bottle', { name: 'Bottle', spr: { tpl: 'potion', pal: 'glassb' }, val: 20 }
 add('heart_pickup', { name: 'Heart', spr: { tpl: 'heart', pal: 'heart' }, pickupHeal: 20 });
 
 // ---------- ores & bars
-const ORES = [['brassine', 'Brassine', 50], ['grelite', 'Grelite', 100], ['veridium', 'Veridium', 200], ['aurelium', 'Aurelium', 400], ['cindrite', 'Cindrite', 800]];
-const ORE_TILE = [T.ORE1, T.ORE2, T.ORE3, T.ORE4, T.ORE5];
-ORES.forEach(([id, nm, v], i) => {
-  add(id + '_ore', { name: nm + ' Ore', place: ORE_TILE[i], spr: { tpl: 'ore', pal: id }, val: v, rar: i === 4 ? 3 : 0 });
-  add(id + '_bar', { name: nm + ' Bar', spr: { tpl: 'bar', pal: id }, val: v * 3, rar: i === 4 ? 3 : i >= 2 ? 1 : 0 });
+// [id, name, value, tile, rarity]
+const ORES = [['copper', 'Copper', 50, T.ORE1, 0], ['iron', 'Iron', 100, T.ORE2, 0], ['silver', 'Silver', 200, T.ORE3, 1], ['gold', 'Gold', 400, T.ORE4, 1], ['demonite', 'Demonite', 600, T.ORE6, 2], ['hellstone', 'Hellstone', 800, T.ORE5, 3]];
+ORES.forEach(([id, nm, v, tile, rar]) => {
+  add(id + '_ore', { name: nm + ' Ore', place: tile, spr: { tpl: 'ore', pal: id }, val: v, rar: rar > 1 ? rar : 0 });
+  add(id + '_bar', { name: nm + ' Bar', spr: { tpl: 'bar', pal: id }, val: v * 3, rar });
 });
 
 // ---------- placeables
 const fur = (id, name, tile, val, tip = '') => add(id, { name, place: tile, spr: { furn: tile }, val, tip, stack: 99 });
 fur('workbench', 'Workbench', T.WORKBENCH, 30, 'Used for basic crafting');
 fur('furnace', 'Furnace', T.FURNACE, 60, 'Used for smelting ore');
-fur('anvil', 'Grelite Anvil', T.ANVIL, 500, 'Used to craft items from metal bars');
+fur('anvil', 'Iron Anvil', T.ANVIL, 500, 'Used to craft items from metal bars');
 fur('alembic', 'Alembic Table', T.ALEMBIC, 200, 'Used to brew tonics');
-fur('cinder_forge', 'Cinder Forge', T.FORGE, 2000, 'Hot enough to smelt Cindrite');
+fur('hellforge', 'Hellforge', T.FORGE, 2000, 'Hot enough to smelt Hellstone');
 fur('chest', 'Chest', T.CHEST, 100, 'Stores items');
 fur('table', 'Table', T.TABLE, 60);
 fur('chair', 'Chair', T.CHAIR, 30);
@@ -73,39 +73,41 @@ CFG.tiers.forEach((tr, i) => {
   add(tr.id + '_mail', { name: tr.name + ' Chainmail', spr: { tpl: 'mail', pal: tr.pal }, stack: 1, rar: r, val: v * 16, slot: 1, def: ar[1], set: tr.id });
   add(tr.id + '_greaves', { name: tr.name + ' Greaves', spr: { tpl: 'greaves', pal: tr.pal }, stack: 1, rar: r, val: v * 12, slot: 2, def: ar[2], set: tr.id });
 });
-const ca = CFG.cindrite.armor;
-add('cindrite_helm', { name: 'Cindrite Helmet', spr: { tpl: 'helm', pal: 'cindrite' }, stack: 1, rar: 3, val: 30000, slot: 0, def: ca[0], set: 'cindrite' });
-add('cindrite_mail', { name: 'Cindrite Breastplate', spr: { tpl: 'mail', pal: 'cindrite' }, stack: 1, rar: 3, val: 40000, slot: 1, def: ca[1], set: 'cindrite' });
-add('cindrite_greaves', { name: 'Cindrite Greaves', spr: { tpl: 'greaves', pal: 'cindrite' }, stack: 1, rar: 3, val: 35000, slot: 2, def: ca[2], set: 'cindrite' });
+const ca = CFG.molten.armor;
+add('molten_helm', { name: 'Molten Helmet', spr: { tpl: 'helm', pal: 'hellstone' }, stack: 1, rar: 3, val: 30000, slot: 0, def: ca[0], set: 'molten' });
+add('molten_mail', { name: 'Molten Breastplate', spr: { tpl: 'mail', pal: 'hellstone' }, stack: 1, rar: 3, val: 40000, slot: 1, def: ca[1], set: 'molten' });
+add('molten_greaves', { name: 'Molten Greaves', spr: { tpl: 'greaves', pal: 'hellstone' }, stack: 1, rar: 3, val: 35000, slot: 2, def: ca[2], set: 'molten' });
 
 export const SET_BONUS = {
-  brassine: { def: CFG.tiers[0].setDef, text: '+2 defense' },
-  grelite: { def: CFG.tiers[1].setDef, text: '+3 defense' },
-  veridium: { def: CFG.tiers[2].setDef, crit: 5, text: '+4 defense, +5% critical chance' },
-  aurelium: { def: CFG.tiers[3].setDef, dmg: 0.08, text: '+5 defense, +8% damage' },
-  cindrite: { def: 6, dmg: CFG.cindrite.dmgBonus, fireImmune: 1, text: '+6 defense, +12% damage, immune to fire' },
+  copper: { def: CFG.tiers[0].setDef, text: '+2 defense' },
+  iron: { def: CFG.tiers[1].setDef, text: '+3 defense' },
+  silver: { def: CFG.tiers[2].setDef, crit: 5, text: '+4 defense, +5% critical chance' },
+  gold: { def: CFG.tiers[3].setDef, dmg: 0.08, text: '+5 defense, +8% damage' },
+  molten: { def: 6, dmg: CFG.molten.dmgBonus, fireImmune: 1, text: '+6 defense, +12% damage, immune to fire' },
 };
 
 add('wooden_sword', { name: 'Wooden Sword', spr: { tpl: 'sword', pal: 'wood' }, stack: 1, val: 100, melee: true, swing: true, auto: false, dmg: 7, ut: 25, kb: 5, crit: 4, len: 30 });
 add('wooden_mallet', { name: 'Wooden Mallet', spr: { tpl: 'hammer', pal: 'wood' }, stack: 1, val: 100, melee: true, swing: true, auto: true, hammer: 25, dmg: 4, ut: 30, kb: 5.5, crit: 4, len: 30, tip: 'Breaks walls and Rot Orbs' });
-add('rotfang_pickaxe', { name: 'Rotfang Pickaxe', spr: { tpl: 'pick', pal: 'rot' }, stack: 1, rar: 2, val: 18000, melee: true, swing: true, auto: true, pick: 100, dmg: 12, ut: 15, kb: 3, crit: 4, len: 32, tip: 'Able to mine Cindrite' });
+add('rotfang_pickaxe', { name: 'Rotfang Pickaxe', spr: { tpl: 'pick', pal: 'rot' }, stack: 1, rar: 2, val: 18000, melee: true, swing: true, auto: true, pick: 100, dmg: 12, ut: 15, kb: 3, crit: 4, len: 32, tip: 'Able to mine Hellstone' });
 add('rotfang_cleaver', { name: 'Rotfang Cleaver', spr: { tpl: 'sword', pal: 'rot' }, stack: 1, rar: 2, val: 20000, melee: true, swing: true, auto: true, dmg: 24, ut: 20, kb: 6, crit: 6, len: 44 });
 add('cryptblade', { name: 'Cryptblade', spr: { tpl: 'sword', pal: 'crypt' }, stack: 1, rar: 2, val: 25000, melee: true, swing: true, auto: true, dmg: 17, ut: 12, kb: 3, crit: 8, len: 40, tip: 'Whispers of the old crypt' });
-add('cindrite_blade', { name: 'Cindrite Blade', spr: { tpl: 'sword', pal: 'cindrite' }, stack: 1, rar: 3, val: 40000, melee: true, swing: true, auto: true, dmg: 32, ut: 22, kb: 6.5, crit: 6, len: 48, inflict: ['fire', 240], tip: 'Sets enemies ablaze' });
+add('fiery_greatsword', { name: 'Fiery Greatsword', spr: { tpl: 'sword', pal: 'hellstone' }, stack: 1, rar: 3, val: 40000, melee: true, swing: true, auto: true, dmg: 32, ut: 22, kb: 6.5, crit: 6, len: 48, inflict: ['fire', 240], tip: 'Sets enemies ablaze' });
+add('slimy_saber', { name: 'Slimy Saber', spr: { tpl: 'sword', pal: 'royal' }, stack: 1, rar: 1, val: 8000, melee: true, swing: true, auto: true, dmg: 14, ut: 19, kb: 5.5, crit: 6, len: 38, tip: 'Still a little sticky' });
+add('frostbrand', { name: 'Frostbrand', spr: { tpl: 'sword', pal: 'ice' }, stack: 1, rar: 2, val: 24000, melee: true, swing: true, auto: true, dmg: 26, ut: 19, kb: 6, crit: 6, len: 46, tip: 'Carved from the Rimehorn\'s antler' });
 add('wallbreaker', { name: 'Wallbreaker', spr: { tpl: 'sword', pal: 'wall' }, stack: 1, rar: 4, val: 80000, melee: true, swing: true, auto: true, dmg: 48, ut: 20, kb: 7, crit: 10, len: 56, inflict: ['fire', 300], tip: 'Carved from the heart of the Cinder Wall' });
 add('wooden_bow', { name: 'Wooden Bow', spr: { tpl: 'bow', pal: 'wood' }, stack: 1, val: 100, ranged: true, ammo: 'arrow', dmg: 4, ut: 30, kb: 0, crit: 4, vel: 6.6, auto: false });
 add('ocular_bow', { name: 'Ocular Bow', spr: { tpl: 'bow', pal: 'eye' }, stack: 1, rar: 2, val: 15000, ranged: true, ammo: 'arrow', dmg: 15, ut: 22, kb: 2, crit: 6, vel: 10, auto: true, tip: 'It keeps looking at you' });
 add('flintlock_popper', { name: 'Flintlock Popper', spr: { tpl: 'gun', pal: 'gun' }, stack: 1, rar: 1, val: 20000, ranged: true, ammo: 'bullet', dmg: 12, ut: 22, kb: 1.5, crit: 8, vel: 12, auto: false });
 add('gyre_boomerang', { name: 'Gyre Boomerang', spr: { tpl: 'boomer', pal: 'wood' }, stack: 1, rar: 1, val: 5000, melee: true, throwBoom: true, dmg: 10, ut: 18, kb: 6, crit: 4, vel: 9, tip: 'Comes back to you' });
 add('spark_wand', { name: 'Spark Wand', spr: { tpl: 'wand', pal: 'spark' }, stack: 1, rar: 1, val: 3000, magic: true, mana: 4, shoot: 'spark', dmg: 9, ut: 22, kb: 2, crit: 4, vel: 7, auto: true });
-add('starlight_wand', { name: 'Starlight Wand', spr: { tpl: 'wand', pal: 'veridium' }, stack: 1, rar: 2, val: 12000, magic: true, mana: 6, shoot: 'starbolt', dmg: 16, ut: 20, kb: 3, crit: 4, vel: 9, auto: true });
+add('starlight_wand', { name: 'Starlight Wand', spr: { tpl: 'wand', pal: 'silver' }, stack: 1, rar: 2, val: 12000, magic: true, mana: 6, shoot: 'starbolt', dmg: 16, ut: 20, kb: 3, crit: 4, vel: 9, auto: true });
 add('tidecaller_staff', { name: 'Tidecaller Staff', spr: { tpl: 'staff', pal: 'tide' }, stack: 1, rar: 2, val: 20000, magic: true, mana: 6, shoot: 'tide', dmg: 20, ut: 18, kb: 3, crit: 4, vel: 7, auto: true, tip: 'Bolts bounce off walls' });
 add('boneshard_staff', { name: 'Boneshard Staff', spr: { tpl: 'staff', pal: 'bone' }, stack: 1, rar: 3, val: 30000, magic: true, mana: 7, shoot: 'boneshard', dmg: 22, ut: 16, kb: 3, crit: 6, vel: 10, auto: true, multi: 3 });
 add('wooden_arrow', { name: 'Wooden Arrow', spr: { tpl: 'arrow', pal: 'wood' }, val: 5, ammoType: 'arrow', dmg: 5, proj: 'arrow' });
 add('flaming_arrow', { name: 'Flaming Arrow', spr: { tpl: 'arrow', pal: 'fire' }, val: 10, ammoType: 'arrow', dmg: 7, proj: 'flame_arrow', rar: 0 });
-add('lead_shot', { name: 'Lead Shot', spr: { tpl: 'bullet', pal: 'grelite' }, val: 7, ammoType: 'bullet', dmg: 7, proj: 'bullet' });
-add('grappling_hook', { name: 'Grappling Hook', spr: { tpl: 'hook', pal: 'grelite' }, stack: 1, val: 2000, hook: true, tip: 'Press E to grapple toward the cursor' });
-add('empty_bucket', { name: 'Empty Bucket', spr: { tpl: 'bucket', pal: 'grelite' }, stack: 99, val: 200, bucket: 0, tip: 'Scoop up liquids' });
+add('lead_shot', { name: 'Lead Shot', spr: { tpl: 'bullet', pal: 'silver' }, val: 7, ammoType: 'bullet', dmg: 7, proj: 'bullet' });
+add('grappling_hook', { name: 'Grappling Hook', spr: { tpl: 'hook', pal: 'iron' }, stack: 1, val: 2000, hook: true, tip: 'Press E to grapple toward the cursor' });
+add('empty_bucket', { name: 'Empty Bucket', spr: { tpl: 'bucket', pal: 'iron' }, stack: 99, val: 200, bucket: 0, tip: 'Scoop up liquids' });
 add('water_bucket', { name: 'Water Bucket', spr: { tpl: 'bucket', pal: 'water' }, stack: 99, val: 200, bucket: 1 });
 add('lava_bucket', { name: 'Lava Bucket', spr: { tpl: 'bucket', pal: 'lava' }, stack: 99, val: 200, bucket: 2 });
 
@@ -117,27 +119,31 @@ acc('featherfall_charm', 'Featherfall Charm', 'sky', 'charm', { noFall: 1 }, 1, 
 acc('glowstone_pendant', 'Glowstone Pendant', 'glow', 'pendant', { light: 1 }, 1, 8000, 'Provides light around you');
 acc('band_of_vigor', 'Band of Vigor', 'vigor', 'band', { regen: 1 }, 1, 10000, 'Slowly regenerates life');
 acc('visor_shield', 'Visor Shield', 'eye', 'shield', { def: 3, kbImmune: 1 }, 2, 20000, 'Grants immunity to knockback');
-acc('emberheart', 'Emberheart', 'cindrite', 'heart', { maxHp: 20, regen: 1 }, 4, 50000, 'Its warmth keeps you going');
+acc('royal_gel', 'Royal Gel', 'royal', 'gel', { slimeFriend: 1 }, 1, 10000, 'Slimes become friendly');
+acc('glacial_eye', 'Glacial Eye', 'ice', 'pendant', { def: 3, dreadImmune: 1, chillImmune: 1 }, 2, 20000, 'Immune to Dread and Chilled');
+acc('emberheart', 'Emberheart', 'hellstone', 'heart', { maxHp: 20, regen: 1 }, 4, 50000, 'Its warmth keeps you going');
 acc('ashen_emblem', 'Ashen Emblem', 'ash', 'emblem', { dmg: 0.15 }, 4, 50000, '15% increased damage');
 
 // ---------- consumables
 const con = (id, name, spr, o) => add(id, Object.assign({ name, spr, stack: 30, consume: true }, o));
 con('healing_tonic', 'Healing Tonic', { tpl: 'potion', pal: 'heal' }, { heal: 60, val: 300, tip: 'Restores 60 life' });
 con('mana_tonic', 'Mana Tonic', { tpl: 'potion', pal: 'mana' }, { manaRestore: 100, val: 250, tip: 'Restores 100 mana' });
-con('ironskin_tonic', 'Ironskin Tonic', { tpl: 'potion', pal: 'iron' }, { buff: ['ironskin', 18000], val: 1000, rar: 1, tip: 'Increases defense by 8' });
+con('ironskin_tonic', 'Ironskin Tonic', { tpl: 'potion', pal: 'ironskin' }, { buff: ['ironskin', 18000], val: 1000, rar: 1, tip: 'Increases defense by 8' });
 con('swiftness_tonic', 'Swiftness Tonic', { tpl: 'potion', pal: 'swift' }, { buff: ['swift', 18000], val: 1000, rar: 1, tip: '25% increased movement speed' });
 con('shine_tonic', 'Shine Tonic', { tpl: 'potion', pal: 'shine' }, { buff: ['shine', 18000], val: 1000, rar: 1, tip: 'Emits an aura of light' });
 con('life_crystal', 'Life Crystal', { tpl: 'crystal', pal: 'heart' }, { maxHp: 20, val: 7500, rar: 2, stack: 99, tip: 'Permanently increases maximum life by 20' });
 con('mana_crystal', 'Mana Crystal', { tpl: 'crystal', pal: 'mana' }, { maxMana: 20, val: 2500, rar: 2, stack: 99, tip: 'Permanently increases maximum mana by 20' });
+con('gel_crown', 'Gel Crown', { tpl: 'crown', pal: 'gold' }, { summon: 'monarch', val: 2000, rar: 1, stack: 20, tip: 'Summons the Gel Monarch' });
+con('antler_idol', 'Antler Idol', { tpl: 'antler', pal: 'antler' }, { summon: 'rimehorn', val: 3000, rar: 1, stack: 20, tip: 'Summons the Rimehorn in the snow' });
 con('gazing_idol', 'Gazing Idol', { tpl: 'idol', pal: 'eye' }, { summon: 'omni', val: 2000, rar: 1, stack: 20, tip: 'Summons the Omnivisor at night' });
 con('rotting_bait', 'Rotting Bait', { tpl: 'bait', pal: 'rot' }, { summon: 'rotmaw', val: 2000, rar: 1, stack: 20, tip: 'Summons the Rotmaw Devourer in the Blight' });
-con('cinder_effigy', 'Cinder Effigy', { tpl: 'idol', pal: 'cindrite' }, { summon: 'wall', val: 5000, rar: 3, stack: 20, tip: 'Summons the Cinder Wall in the underworld' });
+con('cinder_effigy', 'Cinder Effigy', { tpl: 'idol', pal: 'hellstone' }, { summon: 'wall', val: 5000, rar: 3, stack: 20, tip: 'Summons the Cinder Wall in the underworld' });
 
 // ---------- coins
-add('coin_bit', { name: 'Bronze Bit', spr: { tpl: 'coin', pal: 'brassine' }, stack: 100, coin: 1, val: 1 });
-add('coin_mark', { name: 'Silver Mark', spr: { tpl: 'coin', pal: 'grelite' }, stack: 100, coin: 100, val: 100 });
-add('coin_crown', { name: 'Gold Crown', spr: { tpl: 'coin', pal: 'aurelium' }, stack: 100, coin: 10000, val: 10000 });
-add('coin_star', { name: 'Star Crown', spr: { tpl: 'coin', pal: 'star' }, stack: 999, coin: 1000000, val: 1000000 });
+add('coin_bit', { name: 'Copper Coin', spr: { tpl: 'coin', pal: 'copper' }, stack: 100, coin: 1, val: 1 });
+add('coin_mark', { name: 'Silver Coin', spr: { tpl: 'coin', pal: 'silver' }, stack: 100, coin: 100, val: 100 });
+add('coin_crown', { name: 'Gold Coin', spr: { tpl: 'coin', pal: 'gold' }, stack: 100, coin: 10000, val: 10000 });
+add('coin_star', { name: 'Platinum Coin', spr: { tpl: 'coin', pal: 'platinum' }, stack: 999, coin: 1000000, val: 1000000 });
 export const COIN_IDS = ['coin_bit', 'coin_mark', 'coin_crown', 'coin_star'];
 
 export const BUFFS = {
@@ -148,6 +154,7 @@ export const BUFFS = {
   fire: { name: 'On Fire!', desc: 'Slowly losing life', col: '#ff7020', debuff: true },
   poison: { name: 'Poisoned', desc: 'Slowly losing life', col: '#70c040', debuff: true },
   chill: { name: 'Chilled', desc: 'Movement speed reduced', col: '#80c0ff', debuff: true },
+  dread: { name: 'Dread', desc: 'The darkness closes in', col: '#6a3aa0', debuff: true },
 };
 
 // ---------- recipes
@@ -169,9 +176,9 @@ rc('door', 1, 'workbench', [['wood', 6]]);
 rc('chair', 1, 'workbench', [['wood', 4]]);
 rc('table', 1, 'workbench', [['wood', 8]]);
 rc('bed', 1, 'workbench', [['wood', 15], ['gel', 5]]);
-rc('chest', 1, 'workbench', [['wood', 8], ['brassine_bar', 2]]);
+rc('chest', 1, 'workbench', [['wood', 8], ['iron_bar', 2]]);
 rc('furnace', 1, 'workbench', [['stone', 20], ['wood', 4], ['torch', 3]]);
-rc('anvil', 1, 'workbench', [['grelite_bar', 5]]);
+rc('anvil', 1, 'workbench', [['iron_bar', 5]]);
 rc('alembic', 1, 'workbench', [['glass', 4], ['wood', 8]]);
 rc('rotting_bait', 1, 'workbench', [['rotten_chunk', 10]]);
 rc('spark_wand', 1, 'workbench', [['wood', 10], ['fallen_star', 3], ['gel', 5]]);
@@ -187,36 +194,39 @@ CFG.tiers.forEach(tr => {
   rc(tr.id + '_mail', 1, 'anvil', [[tr.id + '_bar', 16]]);
   rc(tr.id + '_greaves', 1, 'anvil', [[tr.id + '_bar', 12]]);
 });
-rc('grappling_hook', 1, 'anvil', [['grelite_bar', 5]]);
-rc('empty_bucket', 1, 'anvil', [['grelite_bar', 3]]);
-rc('gazing_idol', 1, 'anvil', [['lens', 6], ['brassine_bar', 2]]);
-rc('starlight_wand', 1, 'anvil', [['veridium_bar', 10], ['fallen_star', 3]]);
-rc('rotfang_pickaxe', 1, 'anvil', [['rot_scale', 12], ['aurelium_bar', 10]]);
-rc('rotfang_cleaver', 1, 'anvil', [['rot_scale', 10], ['aurelium_bar', 8]]);
-rc('cinder_forge', 1, 'anvil', [['furnace', 1], ['scoria', 10], ['cindrite_ore', 10]]);
+rc('grappling_hook', 1, 'anvil', [['iron_bar', 5]]);
+rc('empty_bucket', 1, 'anvil', [['iron_bar', 3]]);
+rc('gazing_idol', 1, 'anvil', [['lens', 6], ['copper_bar', 2]]);
+rc('gel_crown', 1, 'anvil', [['gel', 25], ['iron_bar', 4]]);
+rc('antler_idol', 1, 'workbench', [['ice', 20], ['lens', 5], ['demonite_ore', 5]]);
+rc('starlight_wand', 1, 'anvil', [['silver_bar', 10], ['fallen_star', 3]]);
+rc('demonite_bar', 1, 'furnace', [['demonite_ore', 3]]);
+rc('rotfang_pickaxe', 1, 'anvil', [['demonite_bar', 12], ['rot_scale', 6]]);
+rc('rotfang_cleaver', 1, 'anvil', [['demonite_bar', 10], ['rot_scale', 5]]);
+rc('hellforge', 1, 'anvil', [['furnace', 1], ['scoria', 10], ['hellstone_ore', 10]]);
 rc('healing_tonic', 2, 'alembic', [['bottle', 1], ['gel', 2], ['glowcap', 1]]);
 rc('mana_tonic', 2, 'alembic', [['bottle', 1], ['fallen_star', 1], ['glowcap', 1]]);
-rc('ironskin_tonic', 1, 'alembic', [['bottle', 1], ['glowcap', 1], ['grelite_ore', 1]]);
+rc('ironskin_tonic', 1, 'alembic', [['bottle', 1], ['glowcap', 1], ['iron_ore', 1]]);
 rc('swiftness_tonic', 1, 'alembic', [['bottle', 1], ['glowcap', 1], ['cactus', 1]]);
 rc('shine_tonic', 1, 'alembic', [['bottle', 1], ['glowcap', 1], ['gel', 1]]);
-rc('cindrite_bar', 1, 'forge', [['cindrite_ore', 3], ['scoria', 1]]);
-rc('cindrite_blade', 1, 'forge', [['cindrite_bar', 15]]);
-rc('cindrite_helm', 1, 'forge', [['cindrite_bar', 10]]);
-rc('cindrite_mail', 1, 'forge', [['cindrite_bar', 16]]);
-rc('cindrite_greaves', 1, 'forge', [['cindrite_bar', 12]]);
-rc('cinder_effigy', 1, 'forge', [['bone', 15], ['cindrite_bar', 3]]);
-export const STATION_NAMES = { workbench: 'Workbench', furnace: 'Furnace', anvil: 'Anvil', alembic: 'Alembic Table', forge: 'Cinder Forge' };
+rc('hellstone_bar', 1, 'forge', [['hellstone_ore', 3], ['scoria', 1]]);
+rc('fiery_greatsword', 1, 'forge', [['hellstone_bar', 15]]);
+rc('molten_helm', 1, 'forge', [['hellstone_bar', 10]]);
+rc('molten_mail', 1, 'forge', [['hellstone_bar', 16]]);
+rc('molten_greaves', 1, 'forge', [['hellstone_bar', 12]]);
+rc('cinder_effigy', 1, 'forge', [['bone', 15], ['hellstone_bar', 3]]);
+export const STATION_NAMES = { workbench: 'Workbench', furnace: 'Furnace', anvil: 'Anvil', alembic: 'Alembic Table', forge: 'Hellforge' };
 
 // mark materials
 for (const r of RECIPES) for (const [id] of r.ing) if (ITEMS[id]) ITEMS[id].material = true;
 
 // ---------- loot tables
 const CHEST_LOOT = {
-  surface: { main: ['cloud_flask', 'swiftstep_boots', 'gyre_boomerang', 'glowstone_pendant', 'spark_wand'], bars: ['brassine_bar', 'grelite_bar'], coin: [30, 150] },
-  cavern: { main: ['cloud_flask', 'swiftstep_boots', 'band_of_vigor', 'glowstone_pendant', 'gyre_boomerang'], bars: ['veridium_bar', 'aurelium_bar'], coin: [150, 600] },
-  sky: { main: ['featherfall_charm', 'cloud_flask', 'starlight_wand'], bars: ['aurelium_bar'], coin: [300, 800] },
-  crypt: { main: ['cryptblade', 'tidecaller_staff', 'band_of_vigor', 'cloud_flask'], bars: ['aurelium_bar'], coin: [800, 2500] },
-  hell: { main: ['swiftstep_boots', 'band_of_vigor', 'glowstone_pendant'], bars: ['cindrite_bar'], coin: [1500, 4000] },
+  surface: { main: ['cloud_flask', 'swiftstep_boots', 'gyre_boomerang', 'glowstone_pendant', 'spark_wand'], bars: ['copper_bar', 'iron_bar'], coin: [30, 150] },
+  cavern: { main: ['cloud_flask', 'swiftstep_boots', 'band_of_vigor', 'glowstone_pendant', 'gyre_boomerang'], bars: ['silver_bar', 'gold_bar'], coin: [150, 600] },
+  sky: { main: ['featherfall_charm', 'cloud_flask', 'starlight_wand'], bars: ['gold_bar'], coin: [300, 800] },
+  crypt: { main: ['cryptblade', 'tidecaller_staff', 'band_of_vigor', 'cloud_flask'], bars: ['gold_bar'], coin: [800, 2500] },
+  hell: { main: ['swiftstep_boots', 'band_of_vigor', 'glowstone_pendant'], bars: ['hellstone_bar'], coin: [1500, 4000] },
 };
 export function chestLoot(kind, rng) {
   const L = CHEST_LOOT[kind], out = [];
@@ -242,8 +252,10 @@ export function potLoot(depth, rng) {
   return coinsToItems(Math.floor(rng.int(20, 200) * m));
 }
 export const BOSS_LOOT = {
-  omni: [['aurelium_ore', 30, 60, 1], ['visor_shield', 1, 1, 1], ['ocular_bow', 1, 1, 0.5], ['lens', 3, 6, 1], ['healing_tonic', 5, 10, 1]],
-  rotmaw: [['rot_scale', 20, 30, 1], ['rotten_chunk', 10, 20, 1], ['healing_tonic', 5, 10, 1]],
+  monarch: [['royal_gel', 1, 1, 1], ['slimy_saber', 1, 1, 0.66], ['gel', 30, 60, 1], ['healing_tonic', 3, 6, 1]],
+  rimehorn: [['frostbrand', 1, 1, 1], ['glacial_eye', 1, 1, 0.66], ['ice', 30, 60, 1], ['healing_tonic', 5, 10, 1]],
+  omni: [['demonite_ore', 30, 60, 1], ['visor_shield', 1, 1, 1], ['ocular_bow', 1, 1, 0.5], ['lens', 3, 6, 1], ['healing_tonic', 5, 10, 1]],
+  rotmaw: [['rot_scale', 20, 30, 1], ['demonite_ore', 30, 60, 1], ['rotten_chunk', 10, 20, 1], ['healing_tonic', 5, 10, 1]],
   warden: [['boneshard_staff', 1, 1, 1], ['bone', 15, 30, 1], ['healing_tonic', 5, 10, 1]],
   wall: [['wallbreaker', 1, 1, 1], ['emberheart', 1, 1, 1], ['ashen_emblem', 1, 1, 1], ['healing_tonic', 10, 15, 1]],
 };
@@ -262,7 +274,7 @@ export function coinsToItems(v) {
 }
 export function coinText(v) {
   if (v <= 0) return 'nothing';
-  const parts = [], names = [['Star Crown', 1000000], ['Gold', 10000], ['Silver', 100], ['Bronze', 1]];
+  const parts = [], names = [['Platinum', 1000000], ['Gold', 10000], ['Silver', 100], ['Copper', 1]];
   for (const [nm, u] of names) { const c = Math.floor(v / u); if (c) { parts.push(c + ' ' + nm); v -= c * u; } }
   return parts.join(' ');
 }
@@ -340,6 +352,27 @@ export function recipesFor(id) {
   return RECIPES.filter(r => r.out === id || r.ing.some(g => g[0] === id));
 }
 
+// ---------- save migration (ore tiers were renamed to their classic names)
+const OLD_TIER = { brassine: 'copper', grelite: 'iron', veridium: 'silver', aurelium: 'gold' };
+const OLD_IDS = { cindrite_ore: 'hellstone_ore', cindrite_bar: 'hellstone_bar', cindrite_helm: 'molten_helm', cindrite_mail: 'molten_mail', cindrite_greaves: 'molten_greaves', cindrite_blade: 'fiery_greatsword', cinder_forge: 'hellforge' };
+export function migrateId(id) {
+  if (ITEMS[id]) return id;
+  if (OLD_IDS[id]) return OLD_IDS[id];
+  const m = /^(brassine|grelite|veridium|aurelium)_(.+)$/.exec(id || '');
+  const nid = m && OLD_TIER[m[1]] + '_' + m[2];
+  return nid && ITEMS[nid] ? nid : null;
+}
+// renames old ids in place; slots holding unknown items are cleared so they can't crash lookups
+export function migrateSlots(arr) {
+  if (!arr) return arr;
+  for (let i = 0; i < arr.length; i++) if (arr[i]) { const id = migrateId(arr[i].id); arr[i] = id ? Object.assign(arr[i], { id }) : null; }
+  return arr;
+}
+export function migrateChar(ch) {
+  if (ch) for (const k of ['inv', 'coins', 'armor', 'acc']) migrateSlots(ch[k]);
+  return ch;
+}
+
 // ---------- world item drops + buffs
 export function dropItem(G, id, n, x, y, vx, vy) {
   if (!n || !ITEMS[id]) return null;
@@ -348,7 +381,8 @@ export function dropItem(G, id, n, x, y, vx, vy) {
   return it;
 }
 export function addBuff(p, id, t) {
-  if (id === 'fire' && p.stats && p.stats.fireImmune) return;
+  const st = p.stats || {};
+  if ((id === 'fire' && st.fireImmune) || (id === 'chill' && st.chillImmune) || (id === 'dread' && st.dreadImmune)) return;
   const b = p.buffs.find(q => q.id === id);
   if (b) b.t = Math.max(b.t, t); else p.buffs.push({ id, t });
 }

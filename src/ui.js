@@ -391,11 +391,12 @@ function drawHotbarInv(G, ctx) {
 function drawBuffs(G, ctx) {
   const p = G.player, U = G.ui;
   const y = U.inv ? Y0 + 5 * PITCH + 26 : Y0 + PITCH + 8;
-  const icon = { ironskin: 'ironskin_tonic', swift: 'swiftness_tonic', shine: 'shine_tonic', sick: 'healing_tonic', fire: 'torch', poison: 'rotten_chunk', chill: 'ice' };
+  const icon = { ironskin: 'ironskin_tonic', swift: 'swiftness_tonic', shine: 'shine_tonic', sick: 'healing_tonic', fire: 'torch', poison: 'rotten_chunk', chill: 'ice', dread: 'antler_idol' };
   p.buffs.forEach((b, k) => {
     const x = X0 + k * 40, B = BUFFS[b.id];
     rrect(ctx, x, y, 32, 32, 5, B.debuff ? 'rgba(110,30,30,0.85)' : 'rgba(40,80,50,0.85)', B.col, 2);
-    ctx.drawImage(G.S.items[icon[b.id]], x, y, 32, 32);
+    const ic = G.S.items[icon[b.id]];
+    if (ic) ctx.drawImage(ic, x, y, 32, 32);
     const s = Math.ceil(b.t / 60);
     text(ctx, s >= 60 ? Math.ceil(s / 60) + 'm' : s + 's', x + 16, y + 46, '#fff', 12, 'center');
     reg(G, x, y, 32, 32, bt => { if (bt === 1 && !B.debuff) { p.buffs = p.buffs.filter(q => q !== b); recalcStats(p); } }, { tip: () => [[B.name, B.debuff ? '#ff9696' : '#96ff96'], [B.desc, '#fff'], [B.debuff ? '' : 'Right-click to cancel', '#aaa']] });
@@ -455,7 +456,7 @@ function drawEquip(G, ctx) {
   const [, my, , mh] = miniRect(G);
   const x = W - 60 - SL, y0 = my + (U.mini.show ? mh : 0) + 58;
   text(ctx, 'Equip', x + SL / 2, y0 - 6, '#fff', 13, 'center');
-  const lab = ['aurelium_helm', 'aurelium_mail', 'aurelium_greaves'];
+  const lab = ['gold_helm', 'gold_mail', 'gold_greaves'];
   for (let k = 0; k < 3; k++) {
     const y = y0 + k * PITCH;
     drawSlot(G, ctx, x, y, p.armor[k], { label: lab[k], bg: 'rgba(56,72,160,0.8)' });
@@ -717,8 +718,10 @@ function textField(G, ctx, key, label, x, y, w, maxLen = 20) {
   text(ctx, label, x, y - 8, '#fff', 16);
   rrect(ctx, x, y, w, 36, 6, focus ? 'rgba(20,30,80,0.95)' : 'rgba(20,30,80,0.7)', focus ? '#ffe050' : '#0c1030', 2);
   text(ctx, val + (focus && (G.tick >> 5) & 1 ? '|' : ''), x + 10, y + 25, '#fff', 17);
-  reg(G, x, y, w, 36, b => { if (b === 0) { M.focus = key; G.input.text = e => {
+  reg(G, x, y, w, 36, b => { if (b === 0) { M.focus = key; let fresh = true; G.input.text = e => {
     if (M.focus !== key) return false;
+    // the first key typed after clicking a field replaces its prefilled text
+    if (fresh && (e.key === 'Backspace' || e.key.length === 1)) { M.fields[key] = ''; fresh = false; }
     if (e.key === 'Backspace') M.fields[key] = (M.fields[key] || '').slice(0, -1);
     else if (e.key === 'Enter' || e.key === 'Tab' || e.key === 'Escape') { M.focus = null; G.input.text = null; }
     else if (e.key.length === 1 && (M.fields[key] || '').length < maxLen) M.fields[key] = (M.fields[key] || '') + e.key;
@@ -745,7 +748,13 @@ export function menuUpdate(G) {
   for (let i = U.regs.length - 1; i >= 0; i--) { const r = U.regs[i]; if (m.x >= r.x && m.x < r.x + r.w && m.y >= r.y && m.y < r.y + r.h) { hit = r; break; } }
   U.hover = hit;
   if (U.slider) { if (m.l) U.slider(m.x); else U.slider = null; }
-  if (m.lp) { audio.init(); if (hit && hit.click) hit.click(0, false); else if (M.focus) { M.focus = null; G.input.text = null; } }
+  if (m.lp) {
+    audio.init();
+    // any click blurs the focused text field first (clicking a field re-focuses it), so a
+    // half-typed name can never keep swallowing keys after a button starts the game
+    if (M.focus) { M.focus = null; G.input.text = null; }
+    if (hit && hit.click) hit.click(0, false);
+  }
   if (m.wheel && hit && hit.wheel) hit.wheel(m.wheel);
   if (I.hit('Escape') && !M.focus && M.screen !== 'loading') {
     const back = { chars: 'title', create: 'chars', worlds: 'chars', newworld: 'worlds', settings: 'title' }[M.screen];

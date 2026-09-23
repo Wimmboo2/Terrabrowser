@@ -30,7 +30,11 @@ export const EN = {
   emberimp: { name: 'Ember Imp', w: 18, h: 24, ai: 'caster', spr: 'emberimp', shot: 'fireball', inflict: ['fire', 180], blood: '#d84a2a' },
   servant: { name: 'Servant of the Omnivisor', w: 18, h: 14, ai: 'homing', spr: 'servant', noGrav: true, noCollide: true, speed: 4, accel: 0.15, minion: true, blood: '#c03030' },
   leech: { name: 'Cinder Leech', w: 12, h: 12, ai: 'worm', worm: { len: 5, seg: 9, spr: 'leech', speed: 6, accel: 0.25, air: true }, noGrav: true, noCollide: true, minion: true, kbRes: 1, blood: '#c83848' },
+  hungry: { name: 'The Hungry', w: 26, h: 26, ai: 'hungry', noGrav: true, noCollide: true, minion: true, kbRes: 0.6, blood: '#a83a4c' },
+  shadowhand: { name: 'Shadow Hand', w: 26, h: 16, ai: 'shadowhand', minion: true, stepUp: true, kbRes: 0.5, inflict: ['chill', 180], blood: '#3a2050' },
   // bosses
+  monarch: { name: 'Gel Monarch', boss: true, w: 116, h: 84, ai: 'monarch', kbRes: 1, blood: '#4a8ce8' },
+  rimehorn: { name: 'Rimehorn', boss: true, w: 60, h: 128, ai: 'rimehorn', kbRes: 1, stepUp: true, blood: '#a8acb8' },
   omni: { name: 'Omnivisor', boss: true, w: 80, h: 80, ai: 'omni', noGrav: true, noCollide: true, kbRes: 1, blood: '#c03030' },
   rotmaw: { name: 'Rotmaw Devourer', boss: true, w: 30, h: 30, ai: 'worm', worm: { len: 26, seg: 22, spr: 'rotmaw', speed: CFG.bosses.rotmaw.speed, accel: CFG.bosses.rotmaw.accel, bodyDmg: CFG.bosses.rotmaw.bodyDmg }, noGrav: true, noCollide: true, kbRes: 1, blood: '#6a3a8a' },
   warden: { name: 'Ossuary Warden', boss: true, w: 64, h: 64, ai: 'warden', noGrav: true, noCollide: true, kbRes: 1, blood: '#e4dfc8' },
@@ -60,6 +64,8 @@ export const PROJ = {
   shadowbolt: { w: 10, h: 10, grav: 0, life: 160, draw: 'orb', col: '#9050ff', light: [0.5, 0.2, 1], noTiles: true },
   laser: { w: 14, h: 4, grav: 0, life: 150, draw: 'laser', col: '#ff5020', light: [1, 0.3, 0.1], noTiles: true },
   rotglob: { w: 10, h: 10, grav: 0.1, life: 200, draw: 'orb', col: '#9ac040', noTiles: true },
+  icespike: { w: 12, h: 40, grav: 0, life: 44, draw: 'spike', noTiles: true, hazard: true, inflict: ['chill', 180] },
+  debris: { w: 12, h: 12, grav: 0.22, life: 220, draw: 'orb', col: '#8a8a96' },
   skullbolt: { w: 14, h: 14, grav: 0, life: 220, draw: 'orb', col: '#40e0ff', light: [0.2, 0.7, 1], home: 0.08, noTiles: true },
 };
 
@@ -75,7 +81,7 @@ export function spawnEnemy(G, key, x, y, o = {}) {
   const e = Object.assign({
     uid: UID++, key, d, x: x - d.w / 2, y: y - d.h, w: d.w, h: d.h, vx: 0, vy: 0, hp, maxHp: hp,
     dir: 1, t: 0, a: 0, b: 0, c: 0, st: 0, onGround: false, flash: 0, rot: 0, anim: 0, burn: 0,
-    noGrav: !!d.noGrav, noCollide: !!d.noCollide, stepUp: d.ai === 'walker', dead: false,
+    noGrav: !!d.noGrav, noCollide: !!d.noCollide, stepUp: d.ai === 'walker' || !!d.stepUp, dead: false,
   }, o);
   e.px = e.x; e.py = e.y;
   if (d.worm) { e.segs = []; for (let i = 0; i < d.worm.len; i++) e.segs.push({ x: cxOf(e), y: cyOf(e) + i * 2, px: cxOf(e), py: cyOf(e) }); }
@@ -194,6 +200,16 @@ export function summonBoss(G, key, at) {
     if (py / 16 < wd.hellLine) { G.msg('The effigy smolders. It must be used in the underworld.', '#c8c8c8'); return false; }
     const dir = px < wd.w * 8 ? 1 : -1;
     e = spawnEnemy(G, 'wall', px - dir * 760, py + 340, { mdir: dir });
+    const front = dir > 0 ? e.x + e.w : e.x;
+    [-270, -120, 120, 270].slice(0, BK.wall.hungries).forEach(off => spawnEnemy(G, 'hungry', front + dir * 60, cyOf(e) + off + 13, { parent: e, off }));
+  } else if (key === 'monarch') {
+    if (py / 16 > wd.surfaceLine + 12) { G.msg('The crown glistens, but nothing answers down here.', '#c8c8c8'); return false; }
+    e = spawnEnemy(G, 'monarch', px + (Math.random() < 0.5 ? -1 : 1) * rnd(240, 380), py - 380, { scale: 1, squash: 0, fade: 1 });
+  } else if (key === 'rimehorn') {
+    if (!G.zone.snow) { G.msg('The idol only stirs in the snow.', '#c8c8c8'); return false; }
+    const spot = standSpot(G, Math.floor(px / 16), Math.floor(py / 16), 34, 3, 9) || standSpot(G, Math.floor(px / 16), Math.floor(py / 16), 12, 3, 9);
+    const [sx, sy] = spot || [Math.floor(px / 16), Math.floor(py / 16) + 1];
+    e = spawnEnemy(G, 'rimehorn', sx * 16 + 8, (sy + 1) * 16 - 0.01, { fade: 1 });
   }
   G.boss = e;
   G.msg(e.d.name + ' has awoken!', CFG.bossColor);
@@ -223,6 +239,21 @@ function findFloorNear(G, tx, ty, range) {
     const x = tx + Math.round(rnd(-range, range));
     for (let y = ty - 10; y < ty + 10; y++) {
       if (solidAt(wd, x, y + 1) && !solidAt(wd, x, y) && !solidAt(wd, x, y - 1) && !solidAt(wd, x, y - 2) && Math.abs(x - tx) > 4) return [x, y];
+    }
+  }
+  return null;
+}
+
+// a floor tile near (tx,ty), preferring ~dist tiles away horizontally, with room for a body wT wide and hT tall
+function standSpot(G, tx, ty, dist, wT, hT) {
+  const wd = G.world;
+  for (let k = 0; k < 40; k++) {
+    const x = tx + (Math.random() < 0.5 ? -1 : 1) * Math.round(dist * rnd(0.7, 1.2));
+    for (let y = ty - 16; y < ty + 16; y++) {
+      if (!solidAt(wd, x, y + 1)) continue;
+      let ok = true;
+      for (let yy = y; yy > y - hT && ok; yy--) for (let xx = x - wT; xx <= x + wT; xx++) if (solidAt(wd, xx, yy)) { ok = false; break; }
+      if (ok) return [x, y];
     }
   }
   return null;
@@ -481,10 +512,162 @@ const AI = {
     if (e.leaving) { e.y += 8; if (e.y > wd.h * 16) { killEnemy(G, e, true); G.boss = null; G.msg('The Cinder Wall sinks back into the depths.', CFG.bossColor); } }
     for (let k = 0; k < 3; k++) G.lights.push({ x: front, y: cy + (k - 1) * 200, r: 1, g: 0.45, b: 0.15 });
   },
+  hungry(G, e) {
+    const w = e.parent, p = G.player;
+    if (!w || w.dead) { killEnemy(G, e, true); return; }
+    e.t++;
+    const front = w.mdir > 0 ? w.x + w.w : w.x;
+    e.ax = front; e.ay = cyOf(w) + e.off;
+    toward(e, p.dead ? e.ax + w.mdir * 80 : p.x + 10, p.dead ? e.ay : p.y + 20, 0.25, sp(G, BK.wall.hungrySpd));
+    e.x += e.vx; e.y += e.vy;
+    const dx = cxOf(e) - e.ax, dy = cyOf(e) - e.ay, d = Math.hypot(dx, dy) || 1, L = BK.wall.hungryLeash;
+    if (d > L) { e.x -= dx / d * (d - L); e.y -= dy / d * (d - L); e.vx *= 0.6; e.vy *= 0.6; }
+    if ((cxOf(e) - front) * w.mdir < 24) e.x += w.mdir * 4;
+    e.rot = Math.atan2(cyOf(e) - e.ay, cxOf(e) - e.ax);
+    e.frame = (e.t >> 3) & 1;
+  },
+  shadowhand(G, e) {
+    const p = G.player;
+    e.t++;
+    e.dir = sign(p.x + 10 - cxOf(e));
+    e.vx += (e.dir * sp(G, 1.6) - e.vx) * 0.1;
+    if (e.onGround && e.hitX) e.vy = -5;
+    e.frame = (e.t >> 3) & 1;
+    if (e.t > 900) killEnemy(G, e, true);
+  },
+  monarch(G, e) {
+    const p = G.player, K = BK.monarch, px = p.x + 10, py = p.y + 21;
+    e.t++;
+    // shrinks as it loses health (feet stay planted)
+    const sc = K.minScale + (1 - K.minScale) * Math.max(0, e.hp / e.maxHp);
+    if (Math.abs(sc - e.scale) > 0.01) { const mx = cxOf(e), by = e.y + e.h; e.scale = sc; e.w = Math.round(e.d.w * sc); e.h = Math.round(e.d.h * sc); e.x = mx - e.w / 2; e.y = by - e.h; }
+    // chunks of gel break off into slimes
+    if (e.split == null) e.split = e.maxHp * (1 - K.split);
+    while (e.hp > 0 && e.hp < e.split) {
+      e.split -= e.maxHp * K.split;
+      if (G.enemies.filter(q => q.d.ai === 'hop' && !q.dead).length < K.maxSlimes) {
+        const q = spawnEnemy(G, Math.random() < 0.6 ? 'cavegel' : 'gelhopper', cxOf(e) + rnd(-20, 20), cyOf(e));
+        q.vy = -rnd(3, 6); q.vx = rnd(-3, 3);
+      }
+    }
+    e.intangible = e.st !== 0;
+    if (p.dead) {
+      e.fade = Math.max(0, e.fade - 0.02); e.vx *= 0.9;
+      if (e.fade <= 0) { G.msg('The Gel Monarch has departed.', CFG.bossColor); killEnemy(G, e, true); G.boss = null; }
+      return;
+    }
+    const far = Math.abs(cxOf(e) - px) > K.teleFar * 16 || Math.abs(cyOf(e) - py) > 22 * 16;
+    if (e.st === 0) {
+      e.c++;
+      e.airT = e.onGround ? 0 : (e.airT || 0) + 1;
+      if (e.airT > 180) { e.st = 1; e.b = 0; e.c = 0; e.airT = 0; }
+      else if (e.onGround) {
+        if (!e.landed) { e.landed = true; e.squash = 0.22; G.fx.shake(e.big ? 6 : 2); G.fx.particles(cxOf(e), e.y + e.h, 10, '#4a8ce8', { spread: 3 }); }
+        e.vx *= 0.75; e.a++;
+        const wait = cd(G, K.wait);
+        e.squash += ((e.a > wait - 12 ? 0.14 : 0) - e.squash) * 0.25;
+        if (far || e.c > cd(G, K.teleEvery)) { e.st = 1; e.b = 0; e.c = 0; G.sfx('magic'); }
+        else if (e.a > wait) {
+          e.a = 0; e.jumps = (e.jumps || 0) + 1; e.landed = false;
+          e.dir = sign(px - cxOf(e));
+          e.big = e.jumps % K.bigEvery === 0;
+          e.vy = -(e.big ? K.bigVy : K.hopVy); e.vx = e.dir * sp(G, e.big ? K.big : K.hop);
+          e.squash = -0.18;
+        }
+      } else { e.squash += (-0.06 - e.squash) * 0.15; e.vx += (e.dir * sp(G, e.big ? K.big : K.hop) - e.vx) * 0.05; }
+    } else if (e.st === 1) {
+      // squish down into a puddle, then reappear next to the player
+      e.b++; e.vx = 0; e.fade = Math.max(0, 1 - e.b / 40); e.squash = 0.4 * (1 - e.fade);
+      if (e.b % 3 === 0) G.fx.particles(cxOf(e), e.y + e.h * 0.7, 3, '#6aa8ff', { spread: 2.5, grav: -0.02 });
+      if (e.b >= 40) {
+        const tx = Math.floor(px / 16), ty = Math.floor(py / 16), hw = Math.ceil(e.w / 32), ht = Math.ceil(e.h / 16) + 1;
+        const spot = standSpot(G, tx, ty, 10, hw, ht) || standSpot(G, tx, ty, 5, hw, ht) || standSpot(G, tx, ty, 22, hw, ht) || standSpot(G, tx, ty, 34, hw, ht);
+        if (spot) { e.x = spot[0] * 16 + 8 - e.w / 2; e.y = (spot[1] + 1) * 16 - e.h - 0.01; e.vy = 0; }
+        e.st = 2; e.b = 0; e.landed = true;
+      }
+    } else {
+      e.b++; e.fade = Math.min(1, e.b / 30); e.squash = 0.4 * (1 - e.fade);
+      if (e.b % 3 === 0) G.fx.particles(cxOf(e), e.y + e.h * 0.7, 3, '#6aa8ff', { spread: 2.5, grav: -0.02 });
+      if (e.b >= 30) { e.st = 0; e.a = 0; e.fade = 1; }
+    }
+  },
+  rimehorn(G, e) {
+    const p = G.player, K = BK.rimehorn, px = p.x + 10, py = p.y + 21, wd = G.world;
+    e.t++;
+    e.intangible = e.fade < 0.5;
+    if (p.dead) {
+      e.vx = e.dir * 1.2; e.anim += 0.08; e.frame = Math.floor(e.anim) & 1; e.fade = Math.max(0, e.fade - 0.006);
+      if (e.fade <= 0) { G.msg('The Rimehorn wanders back into the blizzard.', CFG.bossColor); killEnemy(G, e, true); G.boss = null; }
+      return;
+    }
+    const p2 = e.hp < e.maxHp * D(G).phase2;
+    if (p2 && !e.p2) { e.p2 = true; e.st = 2; e.b = 0; }
+    const foot = e.y + e.h;
+    if (e.st === 0) {
+      e.dir = sign(px - cxOf(e));
+      const spd = sp(G, p2 ? K.walkP2 : K.walk);
+      if (Math.abs(px - cxOf(e)) > 40) e.vx += (e.dir * spd - e.vx) * 0.15; else e.vx *= 0.8;
+      if (e.onGround && e.hitX) e.vy = -8.5;
+      e.anim += Math.abs(e.vx) * 0.05; e.frame = Math.floor(e.anim) & 1;
+      const far = Math.abs(px - cxOf(e)) > 45 * 16 || Math.abs(py - (foot - 40)) > 18 * 16;
+      e.farT = far ? (e.farT || 0) + 1 : 0;
+      if (e.farT > 120) { e.st = 3; e.b = 0; e.farT = 0; return; }
+      if (++e.a > cd(G, p2 ? K.attackEveryP2 : K.attackEvery) && e.onGround) { e.a = 0; e.b = 0; e.atk = ((e.atk || 0) + 1) % 3; e.st = e.atk === 2 ? 2 : 1; }
+      if (p2 && ++e.c > cd(G, K.handsEvery)) {
+        e.c = 0;
+        for (let k = G.enemies.filter(q => q.key === 'shadowhand' && !q.dead).length; k < K.maxHands; k++) {
+          const s = findFloorNear(G, Math.floor(px / 16), Math.floor(py / 16), 14);
+          if (s) { spawnEnemy(G, 'shadowhand', s[0] * 16 + 8, (s[1] + 1) * 16 - 0.01); G.fx.particles(s[0] * 16 + 8, s[1] * 16, 8, '#3a2050', { spread: 2, grav: -0.03 }); }
+        }
+      }
+    } else if (e.st === 1) {
+      // ice spike wave: rear up, slam, and a line of spikes races along the ground
+      e.vx *= 0.7; e.b++; e.frame = e.b < 26 ? 2 : 0;
+      const len = p2 ? K.spikeLenP2 : K.spikeLen, step = K.spikeStep;
+      if (e.b === 26) {
+        G.sfx('roar'); G.fx.shake(8); G.fx.particles(cxOf(e), foot, 16, '#d8f0ff', { spread: 3.5 });
+        e.waves = (p2 ? [-1, 1] : [sign(px - cxOf(e))]).map(dd => ({ d: dd, k: 1 }));
+      }
+      if (e.b > 26 && e.waves && (e.b - 26) % step === 0) {
+        for (const w of e.waves) {
+          if (w.k > len) continue;
+          const tx = Math.floor((cxOf(e) + w.d * (e.w / 2 + w.k * 16)) / 16), fy = Math.floor((foot - 1) / 16);
+          for (let y = fy - 5; y <= fy + 8; y++) {
+            if (solidAt(wd, tx, y + 1) && !solidAt(wd, tx, y)) {
+              const gy = (y + 1) * 16;
+              makeProj(G, 'icespike', tx * 16 + 8, gy - 20, 0, 0, { dmg: K.spikeDmg, src: e.d.name, boss: true, gy, delay: K.spikeDelay, life: K.spikeDelay + 26 });
+              break;
+            }
+          }
+          w.k++;
+        }
+      }
+      if (e.b > 26 + len * step + 24) { e.st = 0; e.waves = null; }
+    } else if (e.st === 2) {
+      // roar: darkness falls; in phase 2 the cave shakes debris loose
+      e.vx *= 0.7; e.b++; e.frame = 2;
+      if (e.b === 30) {
+        G.sfx('roar'); G.fx.shake(14);
+        const dist = Math.hypot(px - cxOf(e), py - cyOf(e));
+        if (dist < K.roarRange) addBuff(p, 'dread', K.dread);
+        if (dist < 170) hurtPlayer(G, K.roarDmg * D(G).bossDmg, sign(px - cxOf(e)), 'was flattened by the Rimehorn\'s roar');
+        if (p2) for (let k = 0; k < K.debris; k++) makeProj(G, 'debris', px + rnd(-280, 280), py - rnd(300, 420), rnd(-0.4, 0.4), 0, { dmg: K.debrisDmg, src: e.d.name, boss: true });
+      }
+      if (e.b > 64) e.st = 0;
+    } else {
+      // burrow into the snow and resurface near the player
+      e.b++; e.vx = 0;
+      if (e.b <= 40) e.fade = 1 - e.b / 40;
+      if (e.b % 3 === 0) G.fx.particles(cxOf(e), foot - 4, 4, '#e8f4ff', { spread: 3, grav: 0.05 });
+      if (e.b === 40) { const s2 = standSpot(G, Math.floor(px / 16), Math.floor(py / 16), 16, 2, 9); if (s2) { e.x = s2[0] * 16 + 8 - e.w / 2; e.y = (s2[1] + 1) * 16 - e.h - 0.01; e.vy = 0; } }
+      if (e.b > 40) e.fade = Math.min(1, (e.b - 40) / 30);
+      if (e.b > 70) { e.st = 0; e.fade = 1; }
+    }
+  },
 };
 
 // ------------------------------------------------------------------ main update
-const SELF_MOVE = new Set(['worm', 'tether', 'omni', 'warden', 'hand', 'wall']);
+const SELF_MOVE = new Set(['worm', 'tether', 'omni', 'warden', 'hand', 'wall', 'hungry']);
 export function updateEnemies(G) {
   const p = G.player, wd = G.world;
   const pcx = p.x + 10, pcy = p.y + 21;
@@ -519,7 +702,8 @@ export function updateEnemies(G) {
     if (p.dead) continue;
     // contact damage
     const boxes = hitboxes(e);
-    for (let i = 0; i < boxes.length; i++) {
+    const harmless = e.intangible || (d.ai === 'hop' && p.stats.slimeFriend);
+    for (let i = 0; i < boxes.length && !harmless; i++) {
       if (overlaps(boxes[i], p)) {
         const dmg = ((i > 0 && d.worm && d.worm.bodyDmg) ? d.worm.bodyDmg : d.dmg * (e.dmgMul || 1)) * (d.boss || d.minion ? D(G).bossDmg : D(G).dmg);
         const side = sign(pcx - (boxes[i].x + boxes[i].w / 2));
@@ -610,6 +794,9 @@ export function updateProjectiles(G) {
         if (d.ret) pr.returning = true;
         if (--pr.pierce <= 0) { pr.dead = true; break; }
       }
+    } else if (d.hazard) {
+      // ground hazards stay put and only hurt while fully erupted
+      if (!p.dead && pr.t >= pr.delay && pr.t < pr.life - 8 && overlaps(pr, p) && hurtPlayer(G, pr.dmg * D(G).bossDmg, 0, 'was impaled by ' + (pr.src || 'ice')) && d.inflict) addBuff(p, d.inflict[0], d.inflict[1]);
     } else if (!p.dead && overlaps(pr, p)) {
       if (hurtPlayer(G, pr.dmg * (pr.boss ? D(G).bossDmg : D(G).dmg), sign(pr.vx), 'was slain by ' + (pr.src || 'a projectile')) && d.inflict) addBuff(p, d.inflict[0], d.inflict[1]);
       pr.dead = true;
