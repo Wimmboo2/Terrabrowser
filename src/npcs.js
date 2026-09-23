@@ -12,7 +12,7 @@ export const NPC_DEFS = {
     lines: [
       [null, 'Greetings, {p}. Is there something I can help you with?'],
       [null, 'A proper house needs a background wall, a door, a light, a table and a chair. Build one and settlers will come.'],
-      [null, 'Ore gets rarer and tougher the deeper you dig: Brassine, then Grelite, Veridium and Aurelium.'],
+      [null, 'Ore gets rarer and tougher the deeper you dig: Copper, then Iron, Silver and Gold.'],
       [null, 'Gel and wood make torches. You will want a lot of torches.'],
       [G => !G.time.isDay, 'The dead walk at night. Stay near the light, or better yet, indoors.'],
       [G => G.time.bloodMoon, 'The moon is red tonight... keep your doors shut.'],
@@ -235,13 +235,15 @@ export function npcTalk(G, n) {
 export function guideHint(G) {
   const F = G.flags.bosses, p = G.player;
   if (!G.npcs.some(n => n.key === 'guide' && n.home)) return 'Build a house first! Surround a room with blocks, fill it with a background wall, then add a door, a torch, a table and a chair.';
+  if (!F.monarch && !F.omni && p.maxHp >= 120) return 'Feeling brave? Craft a Gel Crown from 25 Gel and 4 Iron Bars at an anvil. The Gel Monarch will come bouncing.';
   if (!F.omni) {
-    if (p.maxHp < 160) return 'Explore the caves for Life Crystals, and smelt ore into bars at a Furnace. A Grelite Anvil lets you forge better gear.';
-    return 'When you feel strong, craft a Gazing Idol from 6 Lenses and 2 Brassine Bars, and use it at night to face the Omnivisor.';
+    if (p.maxHp < 160) return 'Explore the caves for Life Crystals, and smelt ore into bars at a Furnace. An Iron Anvil lets you forge better gear.';
+    return 'When you feel strong, craft a Gazing Idol from 6 Lenses and 2 Copper Bars, and use it at night to face the Omnivisor.';
   }
-  if (!F.rotmaw) return 'Smash three Rot Orbs deep in the Blight\'s chasms with a hammer to summon the Rotmaw Devourer. Blightstone needs a Grelite pickaxe or better.';
+  if (!F.rotmaw) return 'Smash three Rot Orbs deep in the Blight\'s chasms with a hammer to summon the Rotmaw Devourer. Blightstone needs an Iron pickaxe or better.';
+  if (!F.rimehorn && Math.random() < 0.5) return 'Something huge stalks the snowfields. An Antler Idol made from Ice, Lenses and Demonite Ore would call it out, if you dare. Keep a light handy.';
   if (!F.warden) return 'The Old Crypt stands near the sea. Ring the Grave Bell beside its door at night to challenge the Ossuary Warden.';
-  if (!F.wall) return 'Mine Cindrite in the underworld with a Rotfang Pickaxe, smelt it at a Cinder Forge, then craft a Cinder Effigy and use it down there.';
+  if (!F.wall) return 'Forge a Rotfang Pickaxe from Demonite Bars and Rot Scales, mine Hellstone in the underworld, smelt it at a Hellforge, then craft a Cinder Effigy and use it down there.';
   return 'You have done it all. Build, explore, and enjoy your world!';
 }
 export function shopFor(G, n) {

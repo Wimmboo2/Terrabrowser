@@ -239,6 +239,9 @@ export async function generateWorld(seed, name, progress) {
       orbs++;
     }
     wd.orbCount = orbs;
+    // demonite veins through the deeper blightstone
+    const veins = Math.max(30, Math.floor((b1 - b0) * 0.8));
+    for (let k = 0; k < veins; k++) blob(rng.int(b0 + 6, b1 - 6), rng.int(wd.surfaceLine + 12, rock + 36), T.ORE6, rng.int(6, 12), t => t === T.BLIGHT);
   }
 
   function crypt() {

@@ -53,6 +53,7 @@ import { updateLiquids } from './liquids.js';
 import { initTime, updateTime, updateEvents, skyState, detectZone } from './events.js';
 import { createUI, uiUpdate, uiDraw, menuUpdate, menuDraw, initMap, randomLook } from './ui.js';
 import { solidAt } from './world.js';
+import { migrateChar } from './items.js';
 
 const canvas = document.getElementById('game');
 const input = createInput(canvas);
@@ -86,8 +87,14 @@ function resetEntities() {
 }
 function startPlay(wd, ch, meta, data) {
   resetEntities();
+  // drop any menu text focus and stale key/mouse state so controls work from the first tick
+  G.menu.focus = null; input.text = null;
+  input.down.clear(); input.pressed.clear();
+  Object.assign(input.mouse, { l: false, r: false, lp: false, rp: false, wheel: 0 });
   G.world = wd;
   G.worldMeta = meta;
+  wd.difficulty = CFG.difficulty[wd.difficulty] ? wd.difficulty : 'normal';
+  G.diff = CFG.difficulty[wd.difficulty];
   G.player = createPlayer(ch);
   G.flags = data && data.flags ? data.flags : { bosses: {}, cryptOpen: false, orbs: 0 };
   G.flags.bosses = G.flags.bosses || {};
@@ -112,6 +119,7 @@ function startPlay(wd, ch, meta, data) {
   initMap(G);
   G.state = 'play';
   G.msg('Welcome to ' + wd.name + ', ' + G.player.name + '!', '#ffe050');
+  if (wd.difficulty === 'hard') G.msg('This is a Hard world. Nothing here will go easy on you.', '#ff5050');
   G.msg('A/D move, Space jump, left-click to use, right-click to interact, Esc inventory, M map.', '#b4d2ff');
 }
 
@@ -130,7 +138,7 @@ G.actions = {
   async refreshLists() {
     const M = G.menu;
     const ck = await listKeys('char:');
-    M.chars = (await Promise.all(ck.map(k => getData(k)))).filter(Boolean).sort((a, b) => b.created - a.created);
+    M.chars = (await Promise.all(ck.map(k => getData(k)))).filter(Boolean).map(migrateChar).sort((a, b) => b.created - a.created);
     const wk = await listKeys('wmeta:');
     M.worlds = (await Promise.all(wk.map(k => getData(k)))).filter(Boolean).sort((a, b) => b.played - a.played);
     if (M.char) M.char = M.chars.find(c => c.id === M.char.id) || M.char;
@@ -144,14 +152,15 @@ G.actions = {
   },
   async deleteChar(id) { await delData('char:' + id); await G.actions.refreshLists(); },
   async deleteWorld(id) { await delData('world:' + id); await delData('wmeta:' + id); await G.actions.refreshLists(); },
-  async createWorld(name, seedText) {
+  async createWorld(name, seedText, difficulty = 'normal') {
     const M = G.menu;
     if (!M.char) { M.screen = 'chars'; return; }
     M.screen = 'loading'; M.loading = { title: 'Generating ' + name, text: 'Starting', frac: 0 };
     const seed = hashSeed(seedText);
     const wd = await generateWorld(seed, name, (t, f) => { M.loading.text = t; M.loading.frac = f; });
     wd.id = 'w' + Date.now().toString(36);
-    const meta = { id: wd.id, name, seedText: String(seedText), seed, created: Date.now(), played: Date.now() };
+    wd.difficulty = CFG.difficulty[difficulty] ? difficulty : 'normal';
+    const meta = { id: wd.id, name, seedText: String(seedText), seed, difficulty: wd.difficulty, created: Date.now(), played: Date.now() };
     startPlay(wd, M.char, meta, null);
     await saveGame(false);
   },
@@ -164,7 +173,7 @@ G.actions = {
     M.loading.text = 'Unpacking'; M.loading.frac = 0.7;
     await new Promise(r => setTimeout(r, 0));
     const wd = unpackWorld(data);
-    const ch = (await getData('char:' + M.char.id)) || M.char;
+    const ch = migrateChar((await getData('char:' + M.char.id)) || M.char);
     startPlay(wd, ch, meta, data);
   },
   save(auto) { saveGame(auto); },
@@ -186,6 +195,7 @@ function pickMusic() {
 }
 function tick() {
   G.tick++;
+  if (G.onTick) G.onTick(G);
   if (G.state === 'play') {
     const z = settings.zoom;
     G.mouseW = { x: (R.cx != null ? R.cx : G.cam.x) + input.mouse.x / z, y: (R.cy != null ? R.cy : G.cam.y) + input.mouse.y / z };
@@ -240,12 +250,13 @@ function frame(now) {
   let dt = now - last;
   last = now;
   if (dt > 250) dt = 250;
-  acc += dt;
+  acc += dt * (G.timeScale || 1);
   let n = 0;
   const tt = performance.now();
-  while (acc >= CFG.STEP && n < 5) { tick(); acc -= CFG.STEP; n++; }
+  const maxSteps = 5 * (G.timeScale || 1);
+  while (acc >= CFG.STEP && n < maxSteps) { tick(); acc -= CFG.STEP; n++; }
   if (n) perf.tick += ((performance.now() - tt) / n - perf.tick) * 0.1;
-  if (n === 5) acc = 0;
+  if (n >= maxSteps) acc = 0;
   render(acc / CFG.STEP);
   requestAnimationFrame(frame);
 }

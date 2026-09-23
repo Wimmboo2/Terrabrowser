@@ -207,24 +207,65 @@ function drawRot(ctx, img, x, y, rot, flip = false, sx = 1) {
   ctx.save(); ctx.translate(Math.round(x), Math.round(y)); ctx.rotate(rot); if (flip) ctx.scale(-1, 1);
   ctx.drawImage(img, -img.width / 2 * sx, -img.height / 2 * sx, img.width * sx, img.height * sx); ctx.restore();
 }
+function drawBone(ctx, img, x0, y0, x1, y1) {
+  const len = Math.hypot(x1 - x0, y1 - y0);
+  ctx.save(); ctx.translate(Math.round(x0), Math.round(y0)); ctx.rotate(Math.atan2(y1 - y0, x1 - x0));
+  ctx.drawImage(img, -4, -img.height / 2, len + 8, img.height); ctx.restore();
+}
 function drawEnemy(G, R, ctx, e, a) {
   const S = R.S, d = e.d, x = lerp(e.px, e.x, a), y = lerp(e.py, e.y, a), cx = x + e.w / 2, cy = y + e.h / 2;
   if (e.flash > 0 && (e.flash & 2)) ctx.globalAlpha = 0.55;
+  if (e.fade != null && e.fade < 1) ctx.globalAlpha *= Math.max(0, e.fade);
   if (d.human) drawHumanoid(ctx, x, y, HUMAN[d.human], { dir: e.dir, walk: e.anim, air: !e.onGround, style: d.style });
   else if (d.worm) {
     const sp = S.en[d.worm.spr];
     for (let i = e.segs.length - 1; i >= 0; i--) { const s = e.segs[i]; drawRot(ctx, i === e.segs.length - 1 ? sp.tail : sp.body, lerp(s.px, s.x, a), lerp(s.py, s.y, a), s.rot || 0); }
     drawRot(ctx, sp.head, cx, cy, e.rot);
-  } else if (d.ai === 'omni') drawRot(ctx, e.p2 ? S.boss.eye2 : S.boss.eye1, cx, cy, e.rot);
-  else if (d.ai === 'warden') drawRot(ctx, S.boss.skull, cx, cy, e.rot);
-  else if (d.ai === 'hand') drawRot(ctx, S.boss.hand, cx, cy, e.rot, e.side < 0);
+  } else if (d.ai === 'omni') drawRot(ctx, (e.p2 ? S.boss.eye2 : S.boss.eye1)[(e.t >> 3) & 1], cx, cy, e.rot);
+  else if (d.ai === 'warden') {
+    // bone arms from the skull's shoulders to each hand (upper arm + forearm with a simple elbow bend)
+    for (const h of e.hands || []) {
+      if (h.dead) continue;
+      const sx = cx + h.side * 22, sy = cy + 26, hx = lerp(h.px, h.x, a) + h.w / 2, hy = lerp(h.py, h.y, a) + h.h / 2 + 10;
+      const dx = hx - sx, dy = hy - sy, dist = Math.hypot(dx, dy) || 1, L = 78;
+      const bend = dist < L * 2 ? Math.sqrt(L * L - (dist / 2) * (dist / 2)) : 0;
+      let nx = -dy / dist, ny = dx / dist;
+      if (nx * h.side < 0) { nx = -nx; ny = -ny; }
+      const ex = sx + dx / 2 + nx * bend, ey = sy + dy / 2 + ny * bend;
+      drawBone(ctx, S.boss.armBone, sx, sy, ex, ey); drawBone(ctx, S.boss.armBone, ex, ey, hx, hy);
+    }
+    drawRot(ctx, S.boss.skull, cx, cy, e.rot);
+  } else if (d.ai === 'hand') drawRot(ctx, S.boss.hand, cx, cy, e.rot, e.side < 0);
   else if (d.ai === 'wall') {
     const tex = S.boss.wallTex, fl = e.mdir < 0;
     for (let yy = y - (y % 64); yy < y + e.h; yy += 64) for (let xx = 0; xx < e.w; xx += 64) ctx.drawImage(tex, 0, 0, Math.min(64, e.w - xx), 64, x + xx, yy, Math.min(64, e.w - xx), 64);
-    const fx = fl ? x + 8 : x + e.w - 8;
-    drawRot(ctx, S.boss.wallEye, fx, cy - 180, 0, fl, 1.4);
-    drawRot(ctx, S.boss.wallEye, fx, cy + 180, 0, fl, 1.4);
-    drawRot(ctx, S.boss.wallMouth, fx, cy, 0, fl, 1.4);
+    const rim = S.boss.wallRim, fx = fl ? x : x + e.w;
+    for (let yy = y - (y % 64); yy < y + e.h; yy += 64) {
+      ctx.save(); ctx.translate(Math.round(fx), Math.round(yy)); if (fl) ctx.scale(-1, 1); ctx.drawImage(rim, -6, 0); ctx.restore();
+    }
+    // the eyes turn to follow the player
+    const p = G.player, ex = fl ? x - 2 : x + e.w + 2;
+    for (const oy of [-190, 190]) {
+      const rel = Math.max(-0.75, Math.min(0.75, Math.atan2(p.y + 21 - (cy + oy), (p.x + 10 - ex) * e.mdir)));
+      drawRot(ctx, S.boss.wallEye, ex, cy + oy, fl ? -rel : rel, fl, 1.4);
+    }
+    drawRot(ctx, S.boss.wallMouth, ex, cy, 0, fl, 1.4);
+  } else if (d.ai === 'hungry') {
+    ctx.strokeStyle = '#5e1624'; ctx.lineWidth = 5; ctx.beginPath(); ctx.moveTo(e.ax, e.ay);
+    ctx.quadraticCurveTo((e.ax + cx) / 2, (e.ay + cy) / 2 + 18, cx, cy); ctx.stroke();
+    ctx.strokeStyle = '#a83a4c'; ctx.lineWidth = 2; ctx.stroke();
+    drawRot(ctx, S.boss.hungry[e.frame || 0], cx, cy, e.rot);
+  } else if (d.ai === 'monarch') {
+    const img = S.boss.monarch, s = e.scale || 1, sq = e.squash || 0;
+    ctx.save(); ctx.translate(Math.round(cx), Math.round(y + e.h)); ctx.scale(s * (1 + sq), s * (1 - sq));
+    ctx.drawImage(img, -img.width / 2, -img.height); ctx.restore();
+  } else if (d.ai === 'rimehorn') {
+    const img = S.boss.rime[e.frame || 0];
+    ctx.save(); ctx.translate(Math.round(cx), Math.round(y + e.h)); if (e.dir < 0) ctx.scale(-1, 1);
+    ctx.drawImage(img, -img.width / 2 + 4, -img.height + 2); ctx.restore();
+  } else if (d.ai === 'shadowhand') {
+    const img = S.boss.shadowHand[e.frame || 0];
+    ctx.globalAlpha *= 0.9; drawRot(ctx, img, cx, y + e.h - img.height / 2, 0, e.dir < 0);
   } else if (d.ai === 'tether') {
     ctx.strokeStyle = '#2e7a1a'; ctx.lineWidth = 4; ctx.beginPath(); ctx.moveTo(e.ax, e.ay); ctx.lineTo(cx, cy); ctx.stroke();
     ctx.strokeStyle = '#4aa02a'; ctx.lineWidth = 2; ctx.stroke();
@@ -282,6 +323,14 @@ function drawProj(R, ctx, pr, a) {
     case 'star': drawRot(ctx, S.items.fallen_star, x, y, pr.t * 0.3); break;
     case 'bone': drawRot(ctx, S.items.bone, x, y, pr.t * 0.3); break;
     case 'boomer': drawRot(ctx, S.items.gyre_boomerang, x, y, pr.rot); break;
+    case 'spike': {
+      // telegraph: frost cracks the ground, then the spike bursts up and sinks again
+      const gy = pr.gy, grow = pr.t < pr.delay ? 0 : Math.min(1, (pr.t - pr.delay) / 5) * Math.min(1, (pr.life - pr.t) / 10);
+      if (pr.t < pr.delay) { ctx.fillStyle = (pr.t >> 1) & 1 ? '#bfe8ff' : '#6aa8d8'; ctx.fillRect(x - 7, gy - 2, 14, 2); }
+      const img = S.boss.iceSpike, h = img.height * grow;
+      if (h > 1) ctx.drawImage(img, 0, 0, img.width, img.height, Math.round(x - img.width / 2), Math.round(gy - h), img.width, Math.round(h));
+      break;
+    }
     case 'laser': ctx.save(); ctx.translate(x, y); ctx.rotate(pr.rot); ctx.fillStyle = d.col; ctx.fillRect(-14, -2.5, 28, 5); ctx.fillStyle = '#fff0d0'; ctx.fillRect(-12, -1, 24, 2); ctx.restore(); break;
     default:
       ctx.fillStyle = d.col; ctx.beginPath(); ctx.arc(x, y, pr.w / 2, 0, 7); ctx.fill();
@@ -454,6 +503,7 @@ export function renderGame(G, R, a) {
   const tc = G.ui.tileCursor;
   if (tc) { ctx.strokeStyle = 'rgba(255,255,255,0.55)'; ctx.lineWidth = 1 / z * 2; ctx.strokeRect(tc[0] * TS + 0.5, tc[1] * TS + 0.5, TS - 1, TS - 1); }
   ctx.restore();
+  drawDread(G, R, ctx, cx, cy, z, a);
   // damage text (screen space)
   ctx.textAlign = 'center';
   for (const t of G.texts) {
@@ -476,6 +526,16 @@ export function renderGame(G, R, a) {
     }
     ctx.stroke();
   }
+}
+
+function drawDread(G, R, ctx, cx, cy, z, a) {
+  const p = G.player, b = p.buffs.find(q => q.id === 'dread');
+  if (!b || p.dead) return;
+  const px = (lerp(p.px, p.x, a) + 10 - cx) * z, py = (lerp(p.py, p.y, a) + 21 - cy) * z;
+  const k = Math.min(1, b.t / 60), r0 = 70 * z, r1 = 190 * z;
+  const gr = ctx.createRadialGradient(px, py, r0, px, py, r1);
+  gr.addColorStop(0, 'rgba(4,2,10,0)'); gr.addColorStop(1, `rgba(4,2,10,${(0.94 * k).toFixed(3)})`);
+  ctx.fillStyle = gr; ctx.fillRect(0, 0, R.W, R.H);
 }
 
 // ------------------------------------------------------------------ title background

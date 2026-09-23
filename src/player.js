@@ -11,9 +11,9 @@ const P = CFG.phys, PC = CFG.player;
 
 export function newCharacter(name, look) {
   const inv = new Array(50).fill(null);
-  inv[0] = { id: 'brassine_sword', n: 1 };
-  inv[1] = { id: 'brassine_pickaxe', n: 1 };
-  inv[2] = { id: 'brassine_axe', n: 1 };
+  inv[0] = { id: 'copper_sword', n: 1 };
+  inv[1] = { id: 'copper_pickaxe', n: 1 };
+  inv[2] = { id: 'copper_axe', n: 1 };
   return { id: 'c' + Date.now().toString(36), name, look, inv, coins: [null, null, null, null], armor: [null, null, null], acc: [null, null, null], maxHp: PC.hp, maxMana: PC.mana, created: Date.now() };
 }
 export function charData(p) {
@@ -35,7 +35,7 @@ export function createPlayer(ch) {
 }
 
 export function recalcStats(p) {
-  const s = { def: 0, speed: 0, dmg: 0, crit: 0, doubleJump: 0, noFall: 0, light: 0, kbImmune: 0, regen: 0, fireImmune: 0, maxHp: 0 };
+  const s = { def: 0, speed: 0, dmg: 0, crit: 0, doubleJump: 0, noFall: 0, light: 0, kbImmune: 0, regen: 0, fireImmune: 0, maxHp: 0, slimeFriend: 0, dreadImmune: 0, chillImmune: 0 };
   for (const a of p.armor) if (a) s.def += ITEMS[a.id].def || 0;
   p.setBonus = null;
   const sets = p.armor.map(a => a && ITEMS[a.id].set);
@@ -169,7 +169,10 @@ export function updatePlayer(G) {
   p.regenT++;
   if (!hasB('fire') && !hasB('poison') && G.tick % 60 === 0 && !p.dead) {
     const rate = (p.regenT > 900 ? 2 : p.regenT > 360 ? 1 : 0) + p.stats.regen * 2;
-    p.hp = Math.min(p.lifeMax, p.hp + rate);
+    p.regenAcc = (p.regenAcc || 0) + rate * (G.diff ? G.diff.regen : 1);
+    const heal = Math.floor(p.regenAcc);
+    p.regenAcc -= heal;
+    p.hp = Math.min(p.lifeMax, p.hp + heal);
   }
   p.manaT++;
   if (p.manaT > 50 && p.mana < p.maxMana && G.tick % (Math.abs(p.vx) < 0.1 ? 3 : 6) === 0) p.mana++;
@@ -346,7 +349,7 @@ function consume(G, id, idx) {
   if (d.heal) {
     if (p.buffs.some(b => b.id === 'sick')) return;
     const h = Math.min(d.heal, p.lifeMax - p.hp);
-    p.hp += h; addBuff(p, 'sick', PC.potionSick);
+    p.hp += h; addBuff(p, 'sick', Math.round(PC.potionSick * (G.diff ? G.diff.sick : 1)));
     G.fx.text(p.x + 10, p.y - 4, h, '#50ff78');
   }
   if (d.manaRestore) { const m = Math.min(d.manaRestore, p.maxMana - p.mana); p.mana += m; G.fx.text(p.x + 10, p.y - 4, m, '#5080ff'); }

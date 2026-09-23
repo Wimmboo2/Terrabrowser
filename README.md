@@ -1,6 +1,6 @@
 # Terrabrowser
 
-A 2D sandbox action-adventure game for the browser, built to play and feel like a classic dig-build-fight sandbox. Everything is original: names, items, enemies, bosses and NPCs. All art is drawn in code, and all sound and music are synthesized with Web Audio. There are no libraries, images or audio files.
+A 2D sandbox action-adventure game for the browser, built to play and feel like a classic dig-build-fight sandbox. Ores and metals use their classic names (Copper, Iron, Silver, Gold, Demonite, Hellstone). Everything else is original: items, enemies, NPCs, and bosses whose looks and fights nod to the classics. All art is drawn in code, and all sound and music are synthesized with Web Audio. There are no libraries, images or audio files.
 
 ## Running it
 
@@ -13,7 +13,7 @@ npx serve .
 
 Any static server works, for example `python3 -m http.server 8000`, then open http://localhost:8000.
 
-Saves go to IndexedDB, with a localStorage fallback. Both are per-browser and per-origin.
+Saves go to IndexedDB, with a localStorage fallback. Both are per-browser and per-origin. Characters and chests from older versions load fine: items from before the ore rename are converted to their new names automatically.
 
 ## Controls
 
@@ -40,7 +40,7 @@ Inventory mouse controls:
 
 ## How to progress
 
-1. You start with a **Brassine** broadsword, pickaxe and axe. Chop trees and kill Gelhoppers for gel. Craft torches, a Workbench, doors, tables and chairs.
+1. You start with a **Copper** broadsword, pickaxe and axe. Chop trees and kill Gelhoppers for gel. Craft torches, a Workbench, doors, tables and chairs.
 2. Build a house: enclose a room with blocks and fill it with a background wall. Add a door, a light, a table and a chair. Use the house icon in the inventory to check a room. It highlights the room green or red and gives the reason. **Rowan the Pathfinder** moves in, and other NPCs arrive as you progress:
 
    | NPC | Arrives when |
@@ -50,13 +50,32 @@ Inventory mouse controls:
    | Dex the Gunsmith | You own a gun or ammo |
    | Fern the Druid | You have defeated a boss |
 
-3. Mine deeper through the ore tiers: Brassine, Grelite, Veridium, then Aurelium. Each pickaxe can mine the next tier. Smelt ore at a Furnace and craft gear at a Grelite Anvil. Each tier gives about +30% melee DPS and a clear jump in defense.
+3. Mine deeper through the ore tiers: Copper, Iron, Silver, then Gold. Each pickaxe can mine the next tier. Smelt ore at a Furnace and craft gear at an Iron Anvil. Each tier gives about +30% melee DPS and a clear jump in defense.
 4. Find **Life Crystals** (+20 max life each, up to 400) and cavern chests. Collect **Fallen Stars** at night to make Mana Crystals.
-5. **Omnivisor**: craft a Gazing Idol from 6 Lenses and 2 Brassine Bars, then use it at night.
-6. **Rotmaw Devourer**: smash three glowing Rot Orbs in the Blight's chasms with a hammer. You can also use Rotting Bait in the Blight. Blightstone needs a Grelite pickaxe.
-7. **Ossuary Warden**: ring the Grave Bell by the Old Crypt at night. Defeating it unseals the crypt and its loot.
-8. Craft a **Rotfang Pickaxe** from Rot Scales and Aurelium Bars, then mine **Cindrite** in the underworld. Smelt it at a Cinder Forge, found in the underworld ruins or crafted.
-9. **The Cinder Wall**: craft a Cinder Effigy at the forge and use it in the underworld. Defeat it to conquer the world.
+5. **Gel Monarch** (optional, a good first fight): craft a Gel Crown from 25 Gel and 4 Iron Bars at an anvil and use it near the surface. It hops after you, teleports next to you when you run, shrinks as it gets hurt, and sheds slimes. It drops the Royal Gel, which makes slimes friendly.
+6. **Omnivisor**: craft a Gazing Idol from 6 Lenses and 2 Copper Bars, then use it at night. It drops Demonite Ore.
+7. **Rotmaw Devourer**: smash three glowing Rot Orbs in the Blight's chasms with a hammer. You can also use Rotting Bait in the Blight. Blightstone needs an Iron pickaxe. It drops Rot Scales and Demonite Ore, and more Demonite veins run through the Blight (a Gold pickaxe mines them).
+8. **Rimehorn** (optional): craft an Antler Idol from 20 Ice, 5 Lenses and 5 Demonite Ore, and use it in the snow. It stomps waves of ice spikes along the ground that you have to jump. Its roar inflicts Dread, which shrinks your vision to a small circle. Below half health it also shakes debris from the sky and sends shadow hands crawling after you.
+9. **Ossuary Warden**: ring the Grave Bell by the Old Crypt at night. Defeating it unseals the crypt and its loot.
+10. Craft a **Rotfang Pickaxe** from 12 Demonite Bars and 6 Rot Scales, then mine **Hellstone** in the underworld. Smelt it at a Hellforge, found in the underworld ruins or crafted, and forge Molten armor and the Fiery Greatsword.
+11. **The Cinder Wall**: craft a Cinder Effigy at the Hellforge and use it in the underworld. It's a wall of living flesh with two laser eyes and a maw, and its Hungries lunge at you on veins. Defeat it to conquer the world.
+
+## Difficulty
+
+Choose a difficulty when you create a world. It is saved with the world and can't be changed afterwards. Hard worlds show a red **HARD** tag in the world list.
+
+- **Normal** is the classic experience. With gear from the matching tier, each boss fight takes about 1-2 minutes, and you'll probably die once or twice while you learn it. A fresh character can survive the first night by fighting.
+- **Hard** is diabolical. Changes compared with Normal:
+  - Enemies have 1.8× health and deal 1.7× damage.
+  - Bosses have 1.8× health and deal 1.4× damage.
+  - Bosses reach their second phase at 70% health instead of 50%.
+  - Everything moves 10% faster and attacks about 40% more often.
+  - Twice as many enemies spawn.
+  - Natural life regeneration is halved, and potion sickness lasts 1.5× longer.
+  - Knockback is stronger.
+  - In return, coin drops are 2.5× larger and every boss drops an extra roll of loot.
+
+Every balance number is in `src/config.js`: enemy and boss stats in `CFG.enemies`, boss behavior (speeds, attack timers) in `CFG.bosses`, and the difficulty multipliers in `CFG.difficulty`.
 
 ## Features
 
@@ -70,7 +89,7 @@ Inventory mouse controls:
   - the brick Old Crypt, on the opposite side from the Blight
   - two floating islands, each with a house and a chest
   - underground cabins, pots, and Life Crystals
-  - an underworld with ash, lava lakes, Cindrite and emberbrick ruins
+  - an underworld with ash, lava lakes, Hellstone and emberbrick ruins
 - **Engine.**
   - A fixed 60 updates per second, with interpolated rendering.
   - The world is drawn in 32×32-tile chunk canvases, and only changed chunks are redrawn.
@@ -84,7 +103,7 @@ Inventory mouse controls:
   - Buffs and debuffs, 5 armor sets with set bonuses, and 3 accessory slots.
   - When you die you drop half your coins, then respawn at your bed or the world spawn.
 - **Combat.** Broadswords with swing arcs, a boomerang, bows and arrows, a gun, and magic staves. Damage numbers, critical hits, knockback, invincibility frames and screen shake.
-- **Enemies and bosses.** 14 regular enemies, each with its own AI, plus 4 multi-phase bosses. Spawns depend on biome, depth, time of day, light and nearby housing. Each boss has unique loot.
+- **Enemies and bosses.** 14 regular enemies, each with its own AI, plus 6 bosses with their own minions and phases. Spawns depend on biome, depth, time of day, light and nearby housing. Each boss has unique loot.
 - **Time and weather.** A 15-minute day/night cycle with sun, moon phases and stars. Rain, blood moons with boosted spawns, and collectible falling stars.
 - **UI.** Laid out like the genre: a hotbar with the selected item's name above it, hearts with a "Life" label, mana stars, and a minimap with zoom buttons. Also buff icons, a chat log, and tooltips with rarity colors. A fullscreen map with fog of war.
 - **Saving.** Autosave every 5 minutes, plus manual save from the pause menu. World data is RLE-compressed.

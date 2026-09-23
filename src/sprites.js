@@ -74,11 +74,13 @@ function flipCanvas(src) { const c = mk(src.width, src.height), x = c.getContext
 export const PAL = {
   wood: { a: '#d8a060', b: '#a8733f', c: '#6e4826', x: '#c8a070', y: '#8a5a30' },
   stone: { a: '#b8b8c0', b: '#8a8a94', c: '#5a5a64' },
-  brassine: { a: '#ffd2a0', b: '#e0904e', c: '#9a5426', x: '#ffe6c8' },
-  grelite: { a: '#eef4fa', b: '#a8b6c6', c: '#5e6c7c', x: '#ffffff' },
-  veridium: { a: '#b8ffe0', b: '#4cd09c', c: '#1f7a58', x: '#e0fff0' },
-  aurelium: { a: '#fff6b0', b: '#f2c844', c: '#a07818', x: '#ffffff' },
-  cindrite: { a: '#ffd090', b: '#ff6a2a', c: '#a02a10', x: '#ffe060' },
+  copper: { a: '#ffd2a0', b: '#e0904e', c: '#9a5426', x: '#ffe6c8' },
+  iron: { a: '#dcd6cc', b: '#9e968a', c: '#5a534b', x: '#f2eee8' },
+  silver: { a: '#f6f9ff', b: '#bcc7d6', c: '#6c7888', x: '#ffffff' },
+  gold: { a: '#fff6b0', b: '#f2c844', c: '#a07818', x: '#ffffff' },
+  platinum: { a: '#f0f6ff', b: '#a8c0d8', c: '#5a7088', x: '#ffffff' },
+  demonite: { a: '#c8a8ff', b: '#7a4ac8', c: '#3a2070', x: '#e8d8ff' },
+  hellstone: { a: '#ffb070', b: '#e0441a', c: '#6a1a0e', x: '#ffe060' },
   rot: { a: '#d8b0f0', b: '#9060c0', c: '#4e2a6e', x: '#b0e060' },
   crypt: { a: '#c8dcff', b: '#6a8ad8', c: '#34489a', x: '#e0ecff' },
   wall: { a: '#ffb080', b: '#d8502a', c: '#7a1e10', x: '#ffd040' },
@@ -104,7 +106,10 @@ export const PAL = {
   heart: { a: '#ffb8b8', b: '#f03848', c: '#8a1020' },
   mana: { a: '#b8dcff', b: '#3a70f0', c: '#1a3090' },
   heal: { a: '#ffb0b0', b: '#f03848', c: '#8a1020' },
-  iron: { a: '#eef4fa', b: '#a8b6c6', c: '#5e6c7c' },
+  ironskin: { a: '#eef4fa', b: '#a8b6c6', c: '#5e6c7c' },
+  royal: { a: '#d0e4ff', b: '#6a9af0', c: '#2a4aa0', x: '#ff5a8a' },
+  ice: { a: '#f0faff', b: '#a8dcff', c: '#4a8ac8', x: '#ffffff' },
+  antler: { a: '#e8d8b8', b: '#c8b490', c: '#8e7a58', x: '#f4f0c8' },
   swift: { a: '#c0ffe0', b: '#40d890', c: '#1a7a50' },
   shine: { a: '#fffcd0', b: '#ffe050', c: '#b09010' },
   glassb: { a: '#ffffff', b: '#d8f0ff', c: '#8ab0c8' },
@@ -174,6 +179,8 @@ const ITEM_DRAW = {
   flask(g, p) { g.rect(7, 2, 3, 3, '#e0f4ff'); g.rect(7, 1, 3, 1, '#a07040'); g.disc(8.5, 10, 4.5, '#d8f0ff'); g.disc(8, 11, 2.5, '#ffffff'); g.disc(10, 10, 1.8, '#ffffff'); },
   boots(g, p) { g.rect(4, 2, 5, 9, p.b); g.rect(4, 10, 9, 4, p.b); g.rect(4, 13, 9, 1, p.c); g.rect(4, 2, 1, 9, p.a); g.line(9, 3, 12, 1, p.x); g.line(9, 5, 13, 3, p.x); },
   charm(g, p) { for (let a = 0; a <= Math.PI; a += 0.1) g.set(8 + Math.cos(a) * 5, 9 - Math.sin(a) * 6, p.b); for (let a = 0; a <= Math.PI; a += 0.1) g.set(8 + Math.cos(a) * 4, 9 - Math.sin(a) * 5, p.a); g.rect(3, 9, 2, 4, p.b); g.rect(11, 9, 2, 4, p.b); g.line(6, 12, 11, 6, p.x); },
+  crown(g, p) { g.rect(3, 8, 11, 5, p.b); g.rect(3, 12, 11, 1, p.c); for (const x of [3, 8, 13]) g.line(x, 8, x, 3, p.a); g.set(3, 2, p.a); g.set(8, 2, p.a); g.set(13, 2, p.a); g.set(8, 10, '#e02040'); g.set(5, 10, '#40b0ff'); g.set(11, 10, '#40b0ff'); g.ell(8, 14, 6, 1.5, '#4aa0e8'); },
+  antler(g, p) { g.line(8, 14, 8, 8, p.b); g.line(8, 8, 3, 3, p.b); g.line(8, 8, 13, 2, p.b); g.line(5, 5, 2, 6, p.a); g.line(11, 4, 14, 6, p.a); g.disc(8, 12, 2.5, p.c); g.set(8, 12, p.x); g.rect(5, 14, 7, 2, '#6a5a50'); },
   pendant(g, p) { g.line(3, 1, 8, 7, '#b8b8c0'); g.line(13, 1, 8, 7, '#b8b8c0'); g.disc(8, 10, 3.5, p.b); g.disc(7, 9, 1.5, p.a); },
   band(g, p) { for (let a = 0; a < Math.PI * 2; a += 0.05) { g.set(8 + Math.cos(a) * 5, 9 + Math.sin(a) * 4, p.b); g.set(8 + Math.cos(a) * 4, 9 + Math.sin(a) * 3, p.c); } g.disc(8, 4.5, 2, p.x); },
   shield(g, p) { g.rect(3, 2, 10, 7, p.b); for (let y = 9; y < 15; y++) for (let x = 3 + (y - 9); x <= 12 - (y - 9); x++) g.set(x, y, p.b); g.disc(8, 7, 2.5, '#ffffff'); g.disc(8.5, 7, 1.2, p.x); g.rect(3, 2, 10, 1, p.a); },
@@ -443,7 +450,37 @@ function buildEnemies() {
   };
   E.grub = { head: seg(12, '#c89080', '#e8b8a8', true, true), body: seg(12, '#b07868', '#d8a090'), tail: seg(9, '#a06858', '#c89080') };
   E.leech = { head: seg(10, '#c83848', '#f07080', true, true), body: seg(9, '#a02838', '#d05060'), tail: seg(7, '#902030', '#c04050') };
-  E.rotmaw = { head: seg(30, '#6a3a8a', '#9a6ac0', true, true), body: seg(26, '#5a3a4a', '#8a6a7a'), tail: seg(20, '#4a2a3a', '#7a5a6a') };
+  { // Rotmaw Devourer: armored purple worm, hooked mandibles, spiked body plates (all drawn facing +x)
+    const plate = (x, y, dx, dy) => (dy < -0.5 ? '#9a86b4' : dy > 0.55 ? '#3a2e4c' : hash2(x, y, 91) < 0.1 ? '#6a5484' : '#5c4a76');
+    const hd = grid(58, 50), c = 25;
+    hd.ell(22, c, 20, 19, null, plate);
+    for (let k = 0; k < 4; k++) hd.line(8 + k * 7, c - 17 + Math.abs(k - 1.5), 8 + k * 7, c + 17 - Math.abs(k - 1.5), k % 2 ? '#4a3c60' : '#6e5c8c');
+    hd.line(6, c - 14, 34, c - 12, '#b8a4cc'); hd.line(6, c + 15, 34, c + 13, '#2e2240');
+    hd.ell(38, c, 6, 9, '#2a0812');
+    for (let k = -2; k <= 2; k++) hd.set(36, c + k * 3, '#e8dcc0');
+    // hooked mandibles curving forward and inward
+    for (const sd of [-1, 1]) for (let k = 0; k <= 18; k++) {
+      const x = 30 + k, y = c + sd * (16 - (k > 10 ? (k - 10) * 1.4 : 0) + Math.sin(k * 0.25) * 2);
+      hd.disc(x, y, k < 12 ? 2.8 - k * 0.08 : 1.6 - (k - 12) * 0.12, k > 13 ? '#8a7858' : k < 3 ? '#b8a880' : '#dccca4');
+    }
+    for (const sd of [-1, 1]) { hd.disc(28, c + sd * 9, 2.8, '#140810'); hd.set(29, c + sd * 9, '#e03040'); }
+    const body = (sz, tail) => {
+      const W = sz + 20, g = grid(W, W), m = W / 2;
+      for (const sd of [-1, 1]) for (const ox of tail ? [-2] : [-6, 3]) { g.line(m + ox, m + sd * sz * 0.45, m + ox - 5, m + sd * (sz * 0.55 + 7), '#2e2240', 1.3); g.set(m + ox - 5, m + sd * (sz * 0.55 + 7), '#8a76a4'); }
+      if (tail) {
+        g.ell(m + 3, m, sz * 0.5, sz * 0.46, null, plate);
+        for (let k = 0; k < 12; k++) g.disc(m - sz * 0.42 - k, m, Math.max(0.6, sz * 0.34 * (1 - k / 12)), k > 8 ? '#2e2240' : '#5c4a76');
+      } else {
+        g.ell(m - sz * 0.36, m, sz * 0.22, sz * 0.4, '#a85a78');
+        g.ell(m + 1, m, sz * 0.5, sz * 0.56, null, plate);
+        g.line(m - 4, m - sz * 0.46, m - 4, m + sz * 0.46, '#4a3c60');
+        g.line(m + 5, m - sz * 0.4, m + 5, m + sz * 0.4, '#6e5c8c');
+        g.line(m + 1, m - sz * 0.54, m + 1, m - sz * 0.54 - 3, '#9a86b4', 0.8);
+      }
+      return g.outline('#140a18').canvas();
+    };
+    E.rotmaw = { head: hd.outline('#140a18').canvas(), body: body(28, false), tail: body(24, true) };
+  }
   { // dune scuttler
     const mkS = f => { const g = grid(28, 16); g.ell(14, 9, 10, 5, '#c8a060'); g.ell(12, 7, 6, 3, '#e8c888'); for (let k = 0; k < 3; k++) { g.line(8 + k * 5, 12, 6 + k * 5 + (f ? 2 : 0), 15, '#8a6a3a'); } g.line(24, 8, 27, 5, '#6a4a2a'); g.line(24, 10, 27, 12, '#6a4a2a'); g.set(21, 7, '#101010'); return g.outline('#3a2a10').canvas(); };
     E.scuttler = [mkS(0), mkS(1)];
@@ -465,52 +502,200 @@ function buildEnemies() {
 
 function buildBosses() {
   const B = {};
-  const eye = mouth => {
-    const g = grid(120, 100), cx = 64, cy = 50, r = 38;
-    for (let t = 0; t < 7; t++) g.line(cx - r + 4, cy + (t - 3) * 8, 2, cy + (t - 3) * 14 + Math.sin(t) * 6, t & 1 ? '#8a1818' : '#c83030', 1.2);
+  const tooth = (g, x, y0, y1, w = 1.6, c = '#f2ead6') => { for (let k = -w; k <= w; k += 0.5) g.line(x + k, y0, x, y1, c); };
+
+  // ---- Omnivisor: a huge bloodshot eye trailing optic nerves; phase 2 tears open into a toothed maw
+  const eye = (mouth, fr) => {
+    const cx = 90, cy = 50, r = 38, g = grid(cx * 2, 100);
+    for (let t = 0; t < 6; t++) {
+      const len = 42 + ((t * 7) % 3) * 8, y0 = cy + (t - 2.5) * 10;
+      for (let s = 0; s <= len; s += 0.5) {
+        const x = cx - r + 8 - s, y = y0 + (t - 2.5) * s * 0.16 + Math.sin(s * 0.16 + t * 1.9 + fr * 1.8) * 3.2 * Math.min(1, s / 12);
+        g.disc(x, y, 0.6 + 2.2 * (1 - s / len), ((s / 5) | 0) % 2 ? '#7a121c' : '#b8262e');
+      }
+    }
     g.disc(cx, cy, r, null, (x, y, dx, dy) => {
       const d = Math.hypot(dx, dy);
-      if (hash2(x >> 1, y >> 1, 7) < 0.06 && d > 14) return '#c02828';
-      return d < r - 8 ? '#fff4f0' : d < r - 3 ? '#ecd0cc' : '#c8a0a0';
+      return d > r - 3 ? '#b89090' : d > r - 9 ? '#e6cfca' : dx + dy < -30 ? '#fffaf7' : '#f7ebe8';
     });
-    if (!mouth) { g.disc(cx + 16, cy, 17, '#2a70c8'); g.disc(cx + 17, cy, 12, '#4a90e8'); g.disc(cx + 20, cy, 7, '#0a0a10'); g.disc(cx + 12, cy - 8, 3, '#ffffff'); }
-    else {
-      g.ell(cx + 20, cy, 16, 22, '#6a0a14'); g.ell(cx + 22, cy, 10, 15, '#2a0206');
-      for (let k = -3; k <= 3; k++) { g.line(cx + 8 + Math.abs(k), cy + k * 6, cx + 16 + Math.abs(k), cy + k * 6, '#f8f0e0', 0.8); }
+    // bloodshot veins creeping forward from the back of the eye
+    for (let v = 0; v < 9; v++) {
+      let x = cx - r + 2, y = cy + (v - 4) * 8, a = (v - 4) * 0.13;
+      for (let s = 0; s < 34; s++) {
+        a += Math.sin(s * 0.7 + v * 2.3) * 0.18;
+        x += Math.cos(a) * 1.1; y += Math.sin(a) * 1.1;
+        if (Math.hypot(x - cx, y - cy) < r - 1) g.set(x, y, s < 14 ? '#c42630' : '#de6a70');
+        if (s === 12 && v % 2) {
+          let bx = x, by = y, ba = a + (v % 4 ? 0.7 : -0.7);
+          for (let q = 0; q < 12; q++) { bx += Math.cos(ba) * 1.1; by += Math.sin(ba) * 1.1; if (Math.hypot(bx - cx, by - cy) < r - 1) g.set(bx, by, '#e07a80'); }
+        }
+      }
     }
-    return g.outline('#300808').canvas();
+    if (!mouth) {
+      g.disc(cx + 17, cy, 18, '#1e5aa8');
+      g.disc(cx + 18, cy, 15, null, (x, y, dx, dy) => (Math.hypot(dx, dy) > 10 ? '#3a82d8' : '#5aa0ec'));
+      g.disc(cx + 21, cy, 7.5, '#08080e'); g.disc(cx + 13, cy - 8, 3, '#ffffff'); g.set(cx + 25, cy + 5, '#bfe0ff');
+    } else {
+      g.ell(cx + 18, cy, 21, 28, '#b02c3c');
+      g.ell(cx + 20, cy, 16, 23, '#4a0610');
+      g.ell(cx + 23, cy, 10, 15, '#1c0206');
+      for (let k = 0; k < 16; k++) {
+        const a = k / 16 * Math.PI * 2, bx = cx + 20 + Math.cos(a) * 16, by = cy + Math.sin(a) * 23;
+        const tx = cx + 20 + Math.cos(a) * 9, ty = cy + Math.sin(a) * 14;
+        for (let w = -1.5; w <= 1.5; w += 0.5) g.line(bx - Math.sin(a) * w, by + Math.cos(a) * w, tx, ty, '#f2ead6');
+      }
+    }
+    return g.outline('#2a0608').canvas();
   };
-  B.eye1 = eye(false); B.eye2 = eye(true);
-  { // warden skull
-    const g = grid(72, 76);
-    g.ell(36, 32, 30, 30, null, (x, y, dx, dy) => (dx < -0.3 && dy < -0.2 ? '#fffbe8' : dy > 0.6 ? '#b8b098' : '#e8e0c8'));
-    g.rect(16, 52, 40, 18, '#e8e0c8'); for (let k = 0; k < 7; k++) g.rect(18 + k * 5, 58, 1, 12, '#6a6450');
-    g.ell(24, 36, 8, 9, '#140a0a'); g.ell(48, 36, 8, 9, '#140a0a'); g.disc(24, 37, 3, '#ff4040'); g.disc(48, 37, 3, '#ff4040');
-    for (let y = 48; y < 54; y++) for (let x = 36 - (y - 48) * 0.6; x <= 36 + (y - 48) * 0.6; x++) g.set(x, y, '#140a0a');
-    g.line(30, 8, 34, 20, '#8a8470'); g.line(34, 20, 30, 26, '#8a8470');
+  B.eye1 = [eye(false, 0), eye(false, 1)]; B.eye2 = [eye(true, 0), eye(true, 1)];
+
+  // ---- Ossuary Warden: a giant skull with bony hands on long arm bones
+  {
+    const g = grid(80, 84), c = 40;
+    const bone = (x, y, dx, dy) => (dx + dy < -0.7 ? '#fffbe8' : dy > 0.55 || dx > 0.62 ? '#bdb59c' : '#e8e0c8');
+    g.ell(c, 34, 32, 31, null, bone);
+    g.ell(c - 22, 50, 9, 8, null, bone); g.ell(c + 22, 50, 9, 8, null, bone);
+    g.ell(c, 71, 19, 9, null, (x, y, dx, dy) => (dy > 0.3 ? '#b0a88e' : '#dcd4bc'));
+    g.rect(c - 17, 62, 34, 5, '#2a1c14');
+    g.rect(c - 18, 50, 36, 12, '#e0d8c0');
+    for (let k = 0; k < 8; k++) { g.rect(c - 16 + k * 4, 60, 3, 4, '#f4efdc'); g.rect(c - 16 + k * 4, 66, 3, 3, '#f4efdc'); }
+    for (const s of [-1, 1]) {
+      g.ell(c + s * 13, 38, 10, 11, '#180c0a'); g.ell(c + s * 13, 40, 7, 7, '#0a0404');
+      g.disc(c + s * 13, 40, 2.2, '#ff3a30'); g.set(c + s * 13 - 1, 39, '#ffb0a0');
+    }
+    for (let y = 49; y < 57; y++) { const w = (y - 49) * 0.5; for (let x = Math.round(c - w); x <= c + w; x++) g.set(x, y, '#180c0a'); }
+    g.line(c - 4, 4, c + 2, 14, '#8a8270'); g.line(c + 2, 14, c - 2, 22, '#8a8270'); g.line(c + 18, 10, c + 22, 18, '#8a8270');
     B.skull = g.outline('#1a140a').canvas();
-    const h = grid(44, 44);
-    h.rect(10, 20, 22, 16, '#e8e0c8'); for (let k = 0; k < 4; k++) h.rect(10 + k * 6, 4 + (k === 0 ? 8 : 0), 4, 18, k & 1 ? '#d8d0b8' : '#e8e0c8'); h.line(8, 26, 2, 14, '#e8e0c8', 1.5); h.rect(14, 36, 14, 6, '#c8c0a8');
-    for (let k = 0; k < 4; k++) h.rect(10 + k * 6, 14, 4, 1, '#8a8470');
+    const bc = '#e8e0c8', bs = '#bdb59c', kn = '#fffbe8';
+    const h = grid(52, 58);
+    h.ell(26, 45, 9, 9, null, (x, y, dx, dy) => (dy > 0.4 ? bs : bc));
+    for (const [tx, ty] of [[9, 8], [20, 2], [32, 2], [43, 8]]) {
+      const mx = 26 + (tx - 26) * 0.45, my = 30;
+      h.line(26 + (tx - 26) * 0.2, 42, mx, my, bc, 1.6); h.disc(mx, my, 2.4, kn);
+      const jx = mx + (tx - mx) * 0.5, jy = my + (ty - my) * 0.5;
+      h.line(mx, my, jx, jy, bc, 1.3); h.disc(jx, jy, 1.9, kn);
+      h.line(jx, jy, tx, ty, bs, 1.1);
+    }
+    h.line(19, 44, 8, 34, bc, 1.6); h.disc(8, 34, 2.2, kn); h.line(8, 34, 3, 24, bs, 1.2);
+    h.rect(22, 51, 8, 6, bs);
     B.hand = h.outline('#1a140a').canvas();
+    const ab = grid(40, 12);
+    ab.rect(5, 4, 30, 4, bc); ab.rect(5, 7, 30, 1, bs);
+    for (const x of [4, 35]) { ab.disc(x, 3.5, 3, kn); ab.disc(x, 8, 3, bc); }
+    B.armBone = ab.outline('#1a140a').canvas();
   }
-  { // cinder wall
+
+  // ---- The Cinder Wall: a wall of scorched living flesh with two eyes, a maw and tethered Hungries
+  {
+    const P2 = Math.PI * 2 / 64;
     const g = grid(64, 64);
     for (let y = 0; y < 64; y++) for (let x = 0; x < 64; x++) {
-      const n = hash2(x >> 2, y >> 2, 31), m = hash2(x, y, 32);
-      g.set(x, y, n < 0.1 ? '#ff8a30' : n < 0.25 ? '#8a2a1a' : m < 0.1 ? '#3a0a08' : '#5a1810');
+      const n = hash2((x >> 3) & 7, (y >> 3) & 7, 31) * 0.6 + hash2((x >> 2) & 15, (y >> 2) & 15, 33) * 0.4, m = hash2(x, y, 32);
+      const fold = Math.sin(y * P2 * 3 + Math.sin(x * P2 * 2) * 1.4);
+      g.set(x, y, fold > 0.8 ? '#c45868' : fold < -0.85 ? '#5e1624' : n < 0.3 ? '#7c2232' : n > 0.75 ? '#aa3c4e' : m < 0.05 ? '#6a1a2a' : '#922e40');
     }
-    for (let k = 0; k < 6; k++) g.line(hash2(k, 0, 1) * 64, 0, hash2(k, 1, 1) * 64, 64, '#ff6a20');
+    for (let k = 0; k < 4; k++) {
+      const x0 = 8 + k * 16, a = 3 + k;
+      for (let y = 0; y < 64; y++) { const x = x0 + Math.sin(y * P2 * (k % 2 + 1) + k) * a; g.set(x, y, '#4a0c1a'); g.set(x + 1, y, k === 1 ? '#ff7a30' : '#6a1426'); }
+    }
     B.wallTex = g.canvas();
-    const e = grid(56, 48);
-    e.ell(28, 24, 26, 20, null, (x, y, dx, dy) => (dx * dx + dy * dy < 0.3 ? '#ffe070' : '#f0d0b0'));
-    e.disc(32, 24, 11, '#ff5010'); e.disc(33, 24, 6, '#200404'); e.ell(28, 6, 26, 5, '#5a1810');
+    const rim = grid(30, 64);
+    for (let y = 0; y < 64; y++) {
+      const b = 12 + Math.sin(y * P2 * 2) * 6 + Math.sin(y * P2 * 5 + 1) * 3;
+      for (let x = 0; x < b; x++) rim.set(x, y, x > b - 3 ? '#4e1020' : x > b - 8 ? '#b04a5a' : x > b - 11 ? '#9a3848' : '#8a2a3a');
+    }
+    B.wallRim = rim.canvas();
+    const e = grid(64, 60);
+    e.ell(32, 30, 30, 27, '#7a2030');
+    e.ell(33, 31, 24, 21, null, (x, y, dx, dy) => (dx * dx + dy * dy > 0.75 ? '#d8bc98' : dx + dy < -0.5 ? '#fff4dc' : '#f4e6c8'));
+    for (let v = 0; v < 6; v++) { let x = 12, y = 20 + v * 4, a = (v - 2.5) * 0.2; for (let s = 0; s < 14; s++) { a += Math.sin(s + v) * 0.3; x += Math.cos(a); y += Math.sin(a); e.set(x, y, '#c83030'); } }
+    e.disc(39, 31, 12, '#7a0c0c'); e.disc(39, 31, 9.5, '#c02420'); e.disc(40, 31, 5, '#1a0202'); e.disc(35, 26, 2.2, '#ffffff');
+    e.ell(32, 7, 29, 6, '#5e1624'); e.ell(32, 55, 27, 4, '#6a1a2a');
     B.wallEye = e.outline('#200404').canvas();
-    const m = grid(64, 56);
-    m.ell(32, 28, 30, 26, '#5a1010'); m.ell(34, 28, 22, 18, '#1a0202');
-    for (let k = 0; k < 6; k++) { m.line(18 + k * 6, 12, 20 + k * 6, 20, '#f0e8d0', 1); m.line(18 + k * 6, 44, 20 + k * 6, 36, '#f0e8d0', 1); }
+    const m = grid(76, 68);
+    m.ell(38, 34, 35, 31, null, (x, y, dx, dy) => (dy < -0.6 ? '#b84658' : dy > 0.6 ? '#5e1624' : '#9a3246'));
+    m.ell(41, 34, 26, 21, '#2a0408'); m.ell(44, 34, 17, 13, '#120102');
+    for (let k = 0; k < 7; k++) { const x = 21 + k * 6.5; tooth(m, x, 14, 26); tooth(m, x + 2, 54, 42); }
     B.wallMouth = m.outline('#200404').canvas();
+    B.hungry = [0, 1].map(f => {
+      const hg = grid(34, 30);
+      hg.disc(14, 15, 12, null, (x, y, dx, dy) => (dx + dy < -7 ? '#c45868' : dy > 6 ? '#5e1624' : '#922e40'));
+      if (f) { hg.ell(24, 15, 8, 10, '#2a0408'); for (let k = 0; k < 3; k++) { tooth(hg, 20 + k * 4, 6, 11, 1); tooth(hg, 20 + k * 4, 24, 19, 1); } }
+      else { hg.ell(24, 15, 7, 3, '#2a0408'); for (let k = 0; k < 3; k++) { tooth(hg, 20 + k * 4, 12, 15, 0.5); tooth(hg, 21 + k * 4, 18, 15, 0.5); } }
+      hg.disc(9, 9, 3, '#f4e6c8'); hg.disc(10, 9, 1.5, '#7a0c0c');
+      return hg.outline('#200404').canvas();
+    });
   }
+
+  // ---- Gel Monarch: an enormous crowned slime with an unlucky adventurer stuck inside
+  {
+    const W = 132, H = 118, cx = 66, base = H - 2, g = grid(W, H);
+    for (let y = 34; y <= base; y++) for (let x = 0; x < W; x++) {
+      const dx = (x - cx) / 62, dy = (y - base) / 80, d = dx * dx + dy * dy;
+      if (d > 1) continue;
+      const bottom = y > base - 4;
+      g.set(x, y, d > 0.9 || bottom ? '#1e4ba0' : dx < -0.25 && dy < -0.55 ? '#8ec8ff' : dy < -0.45 ? '#4a8cf0' : '#3474dc');
+    }
+    // the trapped adventurer, tinted by the gel
+    const t = (c) => mix(c, '#3474dc', 0.55);
+    g.disc(cx - 6, 72, 7, t('#f0c8a0')); g.rect(cx - 12, 64, 13, 5, t('#6a4020'));
+    g.rect(cx - 13, 79, 14, 16, t('#4a6a3a')); g.rect(cx - 12, 95, 5, 10, t('#3a3a5a')); g.rect(cx - 5, 95, 5, 10, t('#3a3a5a'));
+    g.line(cx + 1, 82, cx + 12, 74, t('#c8c8d0'), 1); g.line(cx + 12, 74, cx + 22, 60, t('#e8e8f0'), 0.8);
+    // shine
+    for (let k = 0; k < 10; k++) g.set(cx - 38 + k, 58 - k * 0.8, '#d8ecff');
+    g.disc(cx - 42, 70, 2.2, '#d8ecff');
+    // crown
+    g.rect(cx - 18, 24, 36, 12, '#e8b830'); g.rect(cx - 18, 33, 36, 3, '#a87818');
+    for (let k = 0; k < 5; k++) { const x = cx - 18 + k * 9; for (let j = 0; j < 10; j++) for (let w = -Math.max(0, 4 - j * 0.45); w <= Math.max(0, 4 - j * 0.45); w++) g.set(x + w, 24 - j, j > 6 ? '#fff0a0' : '#e8b830'); }
+    g.disc(cx, 29, 3.2, '#e02040'); g.set(cx - 1, 28, '#ff90a0'); g.disc(cx - 11, 29, 2.2, '#40b0ff'); g.disc(cx + 11, 29, 2.2, '#40b0ff');
+    // face
+    g.ell(cx - 16, 62, 4, 6, '#0e1c3a'); g.ell(cx + 16, 62, 4, 6, '#0e1c3a'); g.set(cx - 17, 59, '#ffffff'); g.set(cx + 15, 59, '#ffffff');
+    B.monarch = g.outline('#0c2250').canvas();
+  }
+
+  // ---- Rimehorn: a towering, gangly, antlered one-eyed beast of the snow
+  const rime = (fr) => {
+    const W = 120, H = 156, g = grid(W, H), fy = H - 2;
+    const fur = (base, lo, hi) => (x, y, dx, dy) => { const n = hash2(x >> 1, y >> 1, 77); return dy > 0.5 || dx > 0.6 ? lo : dx + dy < -0.8 || n < 0.1 ? hi : n > 0.85 ? lo : base; };
+    const lo = fr === 1 ? 6 : fr === 0 ? -6 : 0;
+    // long legs with backward-bent knees and dark hooves
+    for (const [hx, c, sgn] of [[48, '#5a5662', 1], [60, '#7a7684', -1]]) {
+      const kx = hx + 8 - lo * sgn * 0.3, ky = 124, fx = hx - lo * sgn;
+      g.line(hx, 100, kx, ky, c, 5); g.line(kx, ky, fx, fy - 5, c, 3.5);
+      g.rect(fx - 7, fy - 6, 14, 7, '#26222c');
+    }
+    const arm = (sx, sy, ex, ey, c) => { g.line(sx, sy, (sx + ex) / 2 + 4, (sy + ey) / 2, c, 4.5); g.line((sx + ex) / 2 + 4, (sy + ey) / 2, ex, ey, c, 3.5); for (let k = -1; k <= 1; k++) g.line(ex, ey, ex + 3 + k * 3, ey + 8, '#1e1a24', 0.9); };
+    if (fr === 2) arm(46, 62, 34, 16, '#66626e'); else arm(46, 64, 42 - lo * 0.7, 132, '#66626e');
+    // hunched shaggy torso
+    g.ell(56, 78, 27, 34, null, fur('#9ea2ae', '#72768a', '#c8ccd6'));
+    for (let k = 0; k < 18; k++) { const a = Math.PI * 0.45 + k / 18 * Math.PI * 1.1, rx = 56 + Math.cos(a) * 27, ry = 78 + Math.sin(a) * 34; g.line(rx, ry, rx + Math.cos(a) * 5, ry + Math.sin(a) * 5 + 3, k % 2 ? '#7c808e' : '#a8acb8', 0.8); }
+    g.ell(64, 88, 13, 18, null, fur('#bcc0c8', '#9a9eaa', '#d8dbe2'));
+    for (const [x, y, sz] of [[34, 56, 10], [40, 48, 13], [50, 44, 9]]) { g.line(x, y, x - 4, y - sz, '#bfe8ff', 1.6); g.line(x, y, x - 4, y - sz, '#7ec0f0', 0.5); g.set(x - 4, y - sz, '#ffffff'); }
+    // neck and head thrust forward
+    g.line(66, 56, 80, 44, '#8a8e9c', 7);
+    g.ell(86, 42, 13, 14, null, fur('#8a8e9c', '#646876', '#aab0bc'));
+    g.ell(92, 47, 9, 11, '#c8c4bc');
+    const ant = [[82, 30, 72, 16], [72, 16, 64, 2], [72, 16, 63, 18], [67, 8, 72, 0], [90, 30, 100, 16], [100, 16, 110, 3], [100, 16, 110, 19], [106, 9, 101, 0]];
+    for (const [x0, y0, x1, y1] of ant) g.line(x0, y0, x1, y1, '#c8b490', 1.8);
+    for (const [x0, y0, x1, y1] of ant) g.line(x0 + 1, y0 + 1, x1 + 1, y1 + 1, '#8e7a58', 0.4);
+    g.disc(93, 43, 6.5, '#f4f0c8'); g.disc(94, 43, 3.8, '#6a2a18'); g.disc(94, 43, 2, '#100808'); g.set(91, 40, '#ffffff');
+    g.ell(93, 36, 7, 2, '#646876');
+    g.rect(86, 53, 12, 3, '#2a1418');
+    for (let k = 0; k < 3; k++) { g.set(87 + k * 4, 53, '#f0ead8'); g.set(88 + k * 4, 55, '#f0ead8'); }
+    if (fr === 2) arm(66, 62, 88, 12, '#8e929e'); else arm(66, 64, 78 + lo * 0.7, 134, '#8e929e');
+    return g.outline('#141018').canvas();
+  };
+  B.rime = [rime(0), rime(1), rime(2)];
+  B.shadowHand = [0, 1].map(f => {
+    const g = grid(34, 22);
+    g.ell(12, 15, 10, 6, '#1a1024');
+    for (let k = 0; k < 4; k++) { const x = 16 + k * 4, y = 12 - (f ? (k & 1) * 2 : ((k + 1) & 1) * 2); g.line(x - 2, 13, x + 4, y - 4, '#1a1024', 1.2); g.set(x + 4, y - 4, '#6a3aa0'); }
+    g.line(2, 17, -2, 20, '#2a1a3a', 1.5); g.set(8, 12, '#b070ff');
+    return g.outline('#0a0610').canvas();
+  });
+  const sp = grid(18, 44);
+  for (let y = 0; y < 44; y++) { const w = y / 44 * 8; for (let x = Math.round(9 - w); x <= 9 + w; x++) sp.set(x, y, x < 9 - w * 0.3 ? '#e8f8ff' : x > 9 + w * 0.4 ? '#6aa8d8' : '#a8dcff'); }
+  B.iceSpike = sp.outline('#1c4a78').canvas();
   return B;
 }
 
